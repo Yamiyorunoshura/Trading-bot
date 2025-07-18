@@ -1,0 +1,246 @@
+/* 儀表板樣式 */
+.dashboard {
+  padding: 0;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 0 4px;
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* 卡片樣式覆蓋 */
+.dashboard .ant-card {
+  background: #1a1a1a !important;
+  border: 1px solid #333 !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease;
+}
+
+.dashboard .ant-card:hover {
+  border-color: #1890ff !important;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15) !important;
+}
+
+.dashboard .ant-card-head {
+  background: #1a1a1a !important;
+  border-bottom: 1px solid #333 !important;
+  color: #ffffff !important;
+}
+
+.dashboard .ant-card-head-title {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.dashboard .ant-card-body {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+/* 統計數據樣式 */
+.dashboard .ant-statistic-title {
+  color: #888 !important;
+  font-size: 14px !important;
+  margin-bottom: 8px !important;
+}
+
+.dashboard .ant-statistic-content {
+  color: #ffffff !important;
+  font-size: 24px !important;
+  font-weight: 600 !important;
+}
+
+/* 表格樣式 */
+.dashboard .ant-table {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.dashboard .ant-table-thead > tr > th {
+  background: #262626 !important;
+  border-bottom: 1px solid #333 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.dashboard .ant-table-tbody > tr > td {
+  background: #1a1a1a !important;
+  border-bottom: 1px solid #333 !important;
+  color: #ffffff !important;
+}
+
+.dashboard .ant-table-tbody > tr:hover > td {
+  background: #262626 !important;
+}
+
+/* 進度條樣式 */
+.dashboard .ant-progress-bg {
+  background: #1890ff !important;
+}
+
+.dashboard .ant-progress-text {
+  color: #ffffff !important;
+}
+
+/* 標籤樣式 */
+.dashboard .ant-tag {
+  border: none !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+}
+
+/* 按鈕樣式 */
+.dashboard .ant-btn {
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.dashboard .ant-btn-primary {
+  background: #1890ff !important;
+  border-color: #1890ff !important;
+}
+
+.dashboard .ant-btn-primary:hover {
+  background: #40a9ff !important;
+  border-color: #40a9ff !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4) !important;
+}
+
+.dashboard .ant-btn-dangerous {
+  background: #ff4d4f !important;
+  border-color: #ff4d4f !important;
+}
+
+.dashboard .ant-btn-dangerous:hover {
+  background: #ff7875 !important;
+  border-color: #ff7875 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.4) !important;
+}
+
+/* 警告樣式 */
+.dashboard .ant-alert {
+  background: #1a1a1a !important;
+  border: 1px solid #333 !important;
+  border-radius: 6px !important;
+}
+
+.dashboard .ant-alert-error {
+  background: #2a1618 !important;
+  border-color: #ff4d4f !important;
+}
+
+.dashboard .ant-alert-message {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.dashboard .ant-alert-description {
+  color: #888 !important;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  
+  .dashboard-header h2 {
+    font-size: 20px;
+  }
+  
+  .dashboard .ant-statistic-content {
+    font-size: 20px !important;
+  }
+  
+  .dashboard .ant-card {
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard {
+    padding: 0 8px;
+  }
+  
+  .dashboard-header h2 {
+    font-size: 18px;
+  }
+  
+  .dashboard .ant-statistic-content {
+    font-size: 18px !important;
+  }
+}
+
+/* 圖表樣式 */
+.dashboard .recharts-cartesian-grid-horizontal line,
+.dashboard .recharts-cartesian-grid-vertical line {
+  stroke: #333 !important;
+}
+
+.dashboard .recharts-text {
+  fill: #888 !important;
+}
+
+.dashboard .recharts-legend-item-text {
+  color: #ffffff !important;
+}
+
+/* 自定義動畫 */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.dashboard .trading-card:hover {
+  animation: pulse 0.6s ease-in-out;
+}
+
+/* 載入動畫 */
+.dashboard .ant-spin-dot {
+  color: #1890ff !important;
+}
+
+.dashboard .ant-spin-dot-item {
+  background-color: #1890ff !important;
+}
+
+/* 工具提示樣式 */
+.dashboard .ant-tooltip {
+  background: #1a1a1a !important;
+  border: 1px solid #333 !important;
+  border-radius: 6px !important;
+}
+
+.dashboard .ant-tooltip-inner {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.dashboard .ant-tooltip-arrow-content {
+  background: #1a1a1a !important;
+  border: 1px solid #333 !important;
+}

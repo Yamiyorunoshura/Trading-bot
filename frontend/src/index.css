@@ -1,0 +1,241 @@
+/* 全局樣式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #0a0a0a;
+  color: #ffffff;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+}
+
+/* 自定義 Ant Design 暗色主題 */
+.ant-layout {
+  background: #0a0a0a !important;
+}
+
+.ant-layout-header {
+  background: #1a1a1a !important;
+  border-bottom: 1px solid #333 !important;
+}
+
+.ant-layout-sider {
+  background: #141414 !important;
+}
+
+.ant-layout-content {
+  background: #0a0a0a !important;
+}
+
+.ant-menu-dark {
+  background: #141414 !important;
+}
+
+.ant-menu-dark .ant-menu-item {
+  color: #ffffff !important;
+}
+
+.ant-menu-dark .ant-menu-item:hover {
+  background: #262626 !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected {
+  background: #1890ff !important;
+}
+
+/* 卡片樣式 */
+.trading-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 10px 0;
+  transition: all 0.3s ease;
+}
+
+.trading-card:hover {
+  border-color: #1890ff;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
+}
+
+/* 狀態指示器 */
+.status-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.status-indicator.online {
+  background: #52c41a;
+  box-shadow: 0 0 6px #52c41a;
+}
+
+.status-indicator.offline {
+  background: #ff4d4f;
+  box-shadow: 0 0 6px #ff4d4f;
+}
+
+.status-indicator.warning {
+  background: #faad14;
+  box-shadow: 0 0 6px #faad14;
+}
+
+/* 數值顯示 */
+.value-display {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.value-display.positive {
+  color: #52c41a;
+}
+
+.value-display.negative {
+  color: #ff4d4f;
+}
+
+.value-display.neutral {
+  color: #faad14;
+}
+
+/* 圖表容器 */
+.chart-container {
+  width: 100%;
+  height: 300px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 10px 0;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .trading-card {
+    padding: 15px;
+    margin: 5px 0;
+  }
+  
+  .value-display {
+    font-size: 20px;
+  }
+  
+  .chart-container {
+    height: 250px;
+    padding: 15px;
+  }
+}
+
+/* 滾動條樣式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* 動畫效果 */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 自定義按鈕樣式 */
+.btn-primary {
+  background: #1890ff;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #40a9ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+}
+
+.btn-success {
+  background: #52c41a;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  background: #73d13d;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.4);
+}
+
+.btn-danger {
+  background: #ff4d4f;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  background: #ff7875;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.4);
+}
