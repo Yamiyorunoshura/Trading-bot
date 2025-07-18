@@ -1,0 +1,342 @@
+# ====================
+# TRADING STRATEGIES - PROTECT YOUR EDGE
+# ====================
+# 排除所有策略相關文件以保護交易優勢
+python/strategies/
+strategies/
+*.strategy
+*.strat
+*strategy*
+*trading_signal*
+*alpha*
+*edge*
+*proprietary*
+
+# 排除策略配置和參數
+config/strategies/
+config/trading/
+config/private/
+*_strategy_config*
+*_trading_params*
+*_alpha_config*
+
+# 排除回測結果和分析（可能透露策略）
+backtest_results/
+analysis_results/
+performance_analysis/
+*.backtest
+*.analysis
+*.performance
+
+# 排除訓練好的模型（可能包含策略邏輯）
+models/
+*.model
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+
+# ====================
+# SENSITIVE CONFIGURATION
+# ====================
+# 環境變量和密鑰
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+*.env
+.secrets
+secrets/
+keys/
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# API 密鑰和交易所配置
+api_keys/
+exchange_configs/
+*_api_key*
+*_secret*
+*_credentials*
+
+# 個人配置
+config/personal/
+config/private/
+config/production/
+config.toml
+*.config
+user_config/
+
+# ====================
+# RUST SPECIFIC
+# ====================
+# 編譯輸出
+target/
+debug/
+release/
+*.pdb
+*.exe
+*.dll
+*.so
+*.dylib
+*.rlib
+
+# Cargo
+Cargo.lock
+.cargo/
+**/*.rs.bk
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ====================
+# PYTHON SPECIFIC
+# ====================
+# 虛擬環境
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+trading_bot_env/
+*.venv
+
+# Python 緩存
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+.pdm-python
+.pdm-build/
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# PyCharm
+.idea/
+
+# ====================
+# DATA AND LOGS
+# ====================
+# 交易數據和歷史記錄
+data/
+*.csv
+*.json
+*.xlsx
+*.parquet
+*.h5
+*.hdf5
+historical_data/
+market_data/
+price_data/
+trading_data/
+
+# 日誌文件
+logs/
+*.log
+*.log.*
+log/
+
+# 臨時文件
+tmp/
+temp/
+*.tmp
+*.temp
+*.cache
+
+# 數據庫文件
+*.db
+*.sqlite
+*.sqlite3
+
+# ====================
+# SYSTEM FILES
+# ====================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ====================
+# DOCKER
+# ====================
+# Docker
+.dockerignore
+docker-compose.override.yml
+.docker/
+
+# ====================
+# TESTING
+# ====================
+# 測試輸出
+test_results/
+test_output/
+*.test
+.coverage
+
+# ====================
+# DOCUMENTATION (if contains sensitive info)
+# ====================
+# 排除可能包含策略信息的文檔
+docs/private/
+docs/strategies/
+docs/trading_manual/
+PRIVATE_*.md
+STRATEGY_*.md
+TRADING_*.md
+ALPHA_*.md
+
+# ====================
+# BACKUP FILES
+# ====================
+# 備份文件
+*.bak
+*.backup
+*.old
+*.orig
+*.save
+*~
+
+# ====================
+# IDE AND EDITOR
+# ====================
+# Visual Studio Code
+.vscode/
+
+# IntelliJ IDEA
+.idea/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ====================
+# CUSTOM EXCLUSIONS
+# ====================
+# 添加任何其他需要保護的文件模式
+# 例如：包含算法細節的文件
+*_algorithm*
+*_formula*
+*_calculation*
+*_indicator*
+*_signal* 

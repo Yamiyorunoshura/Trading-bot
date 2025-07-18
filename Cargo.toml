@@ -1,0 +1,72 @@
+[package]
+name = "trading-bot"
+version = "0.1.0"
+edition = "2021"
+authors = ["Trading Bot Team"]
+description = "High-performance quantitative trading bot"
+
+[dependencies]
+# 異步運行時
+tokio = { version = "1.0", features = ["full"] }
+tokio-tungstenite = "0.20"
+
+# 序列化和反序列化
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+
+# HTTP客戶端
+reqwest = { version = "0.11", features = ["json", "stream"] }
+
+# 數據庫
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "chrono", "uuid", "rust_decimal"] }
+redis = { version = "0.23", features = ["tokio-comp"] }
+
+# 數據處理
+polars = { version = "0.35", features = ["lazy", "temporal", "strings"] }
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }
+
+# 配置管理
+config = "0.13"
+clap = { version = "4.0", features = ["derive"] }
+
+# 日誌
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# 錯誤處理
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Python整合
+pyo3 = { version = "0.20", features = ["auto-initialize"] }
+
+# 加密
+ring = "0.16"
+base64 = "0.21"
+
+# 數學計算
+rust_decimal = { version = "1.0", features = ["serde", "db-postgres"] }
+
+# 異步特徵
+async-trait = "0.1"
+
+# TOML解析
+toml = "0.8"
+
+# WebSocket相關
+futures-util = "0.3"
+
+[dev-dependencies]
+criterion = "0.5"
+proptest = "1.0"
+tokio-test = "0.4"
+
+[[bin]]
+name = "trading-bot"
+path = "src/main.rs"
+
+[lib]
+name = "trading_bot"
+path = "src/lib.rs"
