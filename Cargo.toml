@@ -58,14 +58,32 @@ toml = "0.8"
 # WebSocket相關
 futures-util = "0.3"
 
+# 隨機數生成
+rand = "0.8"
+
+# Tauri和Web服務器
+tauri = { version = "1.0", features = ["fs-copy-file", "fs-create-dir", "fs-exists", "fs-read-dir", "fs-read-file", "fs-remove-dir", "fs-remove-file", "fs-rename-file", "fs-write-file", "os-all", "path-all", "protocol-asset", "shell-open", "window-close", "window-hide", "window-maximize", "window-minimize", "window-show", "window-start-dragging", "window-unmaximize", "window-unminimize"] }
+axum = { version = "0.7", features = ["ws"] }
+axum-extra = { version = "0.9", features = ["typed-header"] }
+tower = "0.4"
+tower-http = { version = "0.4", features = ["cors", "trace"] }
+hyper = { version = "0.14", features = ["full"] }
+
 [dev-dependencies]
 criterion = "0.5"
 proptest = "1.0"
 tokio-test = "0.4"
 
+[build-dependencies]
+tauri-build = { version = "1.0", features = [] }
+
 [[bin]]
 name = "trading-bot"
 path = "src/main.rs"
+
+[[bin]]
+name = "trading-bot-ui"
+path = "src/bin/ui.rs"
 
 [lib]
 name = "trading_bot"

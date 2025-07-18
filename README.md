@@ -1,6 +1,34 @@
-# 量化交易機器人 v0.1
+# 量化交易機器人 v1.0
 
-一個基於Rust和Python混合架構的高性能量化交易機器人，提供歷史數據分析、策略回測、自動化交易執行和實時Discord通知功能。
+一個基於Rust和Python混合架構的高性能量化交易機器人，提供歷史數據分析、策略回測、自動化交易執行和現代化桌面用戶界面。
+
+## 🎉 v1.0 新功能
+
+### 🖥️ 現代化桌面界面
+- **Tauri桌面應用**: 原生跨平台桌面應用程式
+- **React前端**: 現代化的Web技術界面
+- **實時數據**: WebSocket即時數據更新
+- **專業暗色主題**: 金融級專業外觀
+
+### 📊 7大功能模組
+1. **儀表板** - 即時監控中心
+2. **策略管理** - 策略創建與管理
+3. **盈利分析** - 多維度盈利統計
+4. **回測分析** - 策略回測功能
+5. **風險管理** - 風險控制與監控
+6. **系統設置** - 完整配置管理
+7. **響應式設計** - 支援各種螢幕尺寸
+
+### 🚀 快速開始
+```bash
+# 一鍵啟動
+./scripts/start_dev.sh
+
+# 或使用Windows
+scripts\\start_dev.bat
+```
+
+📚 **詳細指南**: [快速開始](QUICK_START.md) | [使用手冊](USER_MANUAL.md) | [故障排除](TROUBLESHOOTING.md)
 
 ## 🚀 功能特性
 
@@ -24,281 +52,231 @@
    - 紙上交易和實盤交易模式
    - 多種訂單類型支援
 
-4. **📱 Discord通知**
-   - 實時交易通知（開倉、平倉、盈虧）
+4. **🖥️ 桌面用戶界面**
+   - 現代化的Tauri桌面應用
+   - 實時儀表板和監控
+   - 交互式策略管理
+   - 詳細的分析和報告
+
+5. **📱 通知系統**
+   - Discord實時通知
    - 系統狀態監控
    - 績效報告推送
-   - 豐富的消息格式
+   - 風險警報
 
 ### 技術架構
 
 - **Rust核心**: 高性能交易執行、數據處理、風險管理
 - **Python策略**: 靈活的策略開發、回測分析、機器學習整合
-- **混合架構**: 充分發揮兩種語言的優勢
+- **Tauri界面**: 現代化桌面應用，整合Web技術
+- **WebSocket通信**: 實時數據更新和狀態同步
 
 ## 📋 系統要求
 
 ### 必要環境
 
 - **Rust 1.70+** (用於核心引擎)
+- **Node.js 18+** (用於前端界面)
 - **Python 3.9+** (用於策略開發)
-- **PostgreSQL 13+** (關係型數據庫)
-- **Redis 6+** (緩存系統)
-- **ClickHouse** (可選，用於時序數據)
+- **PostgreSQL 13+** (可選，關係型數據庫)
+- **Redis 6+** (可選，緩存系統)
 
-### Python依賴
+### 支援平台
 
-```bash
-pip install pandas numpy yfinance requests matplotlib seaborn
-```
+- **macOS 10.15+**
+- **Windows 10+**
+- **Linux (Ubuntu 20.04+)**
 
 ## 🔧 快速開始
 
-### 1. 環境設置
+### 方法1: 一鍵啟動（推薦）
 
 ```bash
-# 克隆項目
-git clone <repository-url>
-cd trading-bot-v0
+# macOS/Linux
+./scripts/start_dev.sh
 
-# 設置開發環境
-./scripts/setup.sh
+# Windows
+scripts\\start_dev.bat
+```
 
-# 複製配置文件
+### 方法2: 手動啟動
+
+```bash
+# 1. 設置環境
 cp .env.example .env
 
-# 編輯配置文件，設置API密鑰
-nano .env
-```
-
-### 2. 安裝依賴
-
-```bash
-# 安裝Rust依賴
+# 2. 安裝依賴
 cargo build
+cd frontend && npm install && cd ..
 
-# 安裝Python依賴
-pip install -r requirements.txt
+# 3. 啟動桌面應用
+cd frontend && npm run tauri dev
 ```
 
-### 3. 配置設定
+### 首次使用
 
-編輯 `config/config.toml` 文件：
+1. **啟動應用** → 桌面應用自動打開
+2. **查看儀表板** → 檢查系統狀態
+3. **創建策略** → 策略管理 → 新增策略
+4. **運行回測** → 回測分析 → 測試策略
+5. **分析結果** → 盈利分析 → 查看報告
 
+## 📊 界面預覽
+
+### 儀表板
+- 💰 實時資產和盈虧統計
+- 📊 市場數據和系統狀態
+- 📈 盈利趨勢圖表
+- 🔄 策略運行狀態
+
+### 策略管理
+- 🎯 創建和編輯策略
+- ⚡ 一鍵啟動/停止
+- 📊 策略績效監控
+- 🔧 參數優化
+
+### 盈利分析
+- 📈 多維度盈利分析
+- 📊 風險指標計算
+- 📋 詳細交易記錄
+- 📊 圖表和統計
+
+## 🔧 配置說明
+
+### 基本配置 (.env)
+```bash
+# 演示模式（推薦新手）
+DEMO_MODE=true
+BINANCE_TESTNET=true
+
+# 數據庫（可選）
+DATABASE_URL=sqlite:./trading_bot.db
+
+# API配置（實際交易時設置）
+BINANCE_API_KEY=your_api_key
+BINANCE_API_SECRET=your_api_secret
+```
+
+### 高級配置 (config/config.toml)
 ```toml
-[database]
-postgres_url = "postgresql://username:password@localhost/trading_db"
-redis_url = "redis://localhost:6379"
-
-[discord]
-token = "YOUR_DISCORD_BOT_TOKEN"
-channel_id = "YOUR_DISCORD_CHANNEL_ID"
-enabled = true
-
-[exchanges.binance]
-api_key = "YOUR_BINANCE_API_KEY"
-secret_key = "YOUR_BINANCE_SECRET_KEY"
-testnet = true
+[application]
+name = "trading-bot"
+version = "1.0.0"
 
 [trading]
-live_trading = false  # 設為true啟用實盤交易
+demo_mode = true
+initial_balance = 10000.0
+
+[webserver]
+host = "127.0.0.1"
+port = 8080
+
+[risk]
+max_drawdown = 0.10
 max_position_size = 1000.0
-risk_limit = 0.02
-```
-
-### 4. 啟動系統
-
-```bash
-# 驗證配置
-cargo run -- validate-config
-
-# 啟動演示模式
-cargo run -- start --demo
-
-# 啟動實盤模式
-cargo run -- start
-```
-
-## 📈 使用指南
-
-### 運行回測
-
-```bash
-# 運行SMA交叉策略回測
-cargo run -- backtest --strategy SMA_Cross --from 2024-01-01 --to 2024-12-01 --capital 10000
-
-# 指定配置文件
-cargo run -- backtest --strategy SMA_Cross --from 2024-01-01 --to 2024-12-01 --config custom-config.toml
-```
-
-### 系統監控
-
-```bash
-# 檢查系統狀態
-cargo run -- status
-
-# 查看日誌
-tail -f logs/trading-bot.log
-
-# 停止系統
-cargo run -- stop
 ```
 
 ## 🧩 策略開發
 
-### 創建新策略
+### 支援的策略類型
 
-1. 在 `python/strategies/` 目錄創建新策略文件
-2. 繼承 `BaseStrategy` 類
-3. 實現必要的方法
+- **SMA交叉策略**: 移動平均線交叉
+- **均值回歸策略**: 價格回歸均值
+- **動量策略**: 趨勢跟隨
+- **套利策略**: 價差套利
 
-```python
-from strategies.base import BaseStrategy, StrategySignal, SignalType
+### 創建自定義策略
 
-class MyStrategy(BaseStrategy):
-    def generate_signals(self, data):
-        # 實現你的策略邏輯
-        signals = []
-        # ... 策略邏輯 ...
-        return signals
-    
-    def calculate_position_size(self, signal, price, balance):
-        # 實現倉位計算
-        return balance * 0.1 / price
-```
-
-### 現有策略
-
-- **SMA交叉策略**: 基於快慢移動平均線交叉的經典策略
-- 更多策略正在開發中...
+1. 在策略管理界面點擊"新增策略"
+2. 選擇策略類型和參數
+3. 配置風險控制
+4. 運行回測驗證
+5. 啟動策略
 
 ## 🔒 風險管理
 
 ### 內建風險控制
 
-- **最大倉位限制**: 防止單筆交易過大
+- **最大回撤限制**: 10%（可配置）
 - **止損止盈**: 自動風險控制
-- **最大回撤限制**: 系統級風險保護
-- **連續虧損保護**: 防止連續虧損
+- **倉位限制**: 防止過度集中
+- **風險警報**: 即時風險提醒
 
-### 緊急停止機制
+### 安全機制
 
-系統支援多種緊急停止觸發條件：
-- 虧損超過閾值
-- 回撤超過限制
-- 連續虧損次數
-- API錯誤率過高
+- **演示模式**: 無真實資金風險
+- **測試網絡**: 使用Binance測試網
+- **權限控制**: API權限最小化
+- **資金保護**: 多重安全驗證
 
-## 📊 績效分析
+## 📈 使用指南
 
-### 回測報告包含
+### 新手指南
 
-- 總收益和收益率
-- 年化收益率
-- 最大回撤
-- 夏普比率和索蒂諾比率
-- 交易統計（勝率、平均盈虧等）
-- 權益曲線圖
+1. **安裝運行**: 使用一鍵啟動腳本
+2. **熟悉界面**: 瀏覽各功能模組
+3. **創建策略**: 從SMA交叉策略開始
+4. **運行回測**: 測試策略效果
+5. **分析結果**: 查看盈利和風險指標
 
-### 實時監控
+### 高級使用
 
-- Discord實時通知
-- 系統健康檢查
-- 交易日誌記錄
-- 績效指標追蹤
+1. **連接實盤**: 配置真實API密鑰
+2. **策略優化**: 調整參數提高績效
+3. **風險管理**: 設置適當的風險限額
+4. **多策略**: 運行多個策略組合
+5. **監控報告**: 設置通知和報告
 
-## 🔧 開發指南
+## 🛠️ 開發與擴展
+
+### 技術細節
+
+- **前端**: React + TypeScript + Ant Design
+- **後端**: Rust + axum + WebSocket
+- **桌面**: Tauri跨平台框架
+- **圖表**: Recharts響應式圖表
+- **狀態**: Zustand狀態管理
 
 ### 項目結構
 
 ```
-├── src/                    # Rust源代碼
-│   ├── api/               # 外部API整合
-│   ├── data/              # 數據管理
-│   ├── models/            # 數據模型
-│   ├── python/            # Python橋接
+├── src/                    # Rust後端源代碼
+│   ├── bin/ui.rs          # Tauri應用入口
+│   ├── api/               # API整合
 │   ├── trading/           # 交易引擎
-│   └── utils/             # 工具函數
-├── python/                # Python源代碼
-│   ├── strategies/        # 策略實現
-│   ├── backtest/         # 回測引擎
-│   ├── bridge/           # Rust橋接
-│   └── analysis/         # 分析工具
-├── config/               # 配置文件
-├── tests/                # 測試文件
-└── docs/                 # 文檔
+│   └── ...
+├── frontend/              # React前端源代碼
+│   ├── src/components/    # UI組件
+│   ├── src/stores/        # 狀態管理
+│   └── ...
+├── scripts/               # 啟動腳本
+├── config/                # 配置文件
+└── docs/                  # 文檔
 ```
-
-### 開發工作流
-
-```bash
-# 格式化代碼
-cargo fmt
-black python/
-
-# 檢查代碼
-cargo clippy
-flake8 python/
-
-# 運行測試
-cargo test
-pytest python/tests/
-
-# 構建發布版本
-cargo build --release
-```
-
-## 🛡️ 安全注意事項
-
-1. **API密鑰安全**: 
-   - 使用環境變量存儲API密鑰
-   - 定期輪換密鑰
-   - 限制API權限
-
-2. **資金安全**:
-   - 始終在測試網測試
-   - 設置合理的風險限額
-   - 監控異常行為
-
-3. **系統安全**:
-   - 定期更新依賴
-   - 使用防火牆保護
-   - 監控系統日誌
 
 ## 🐛 故障排除
 
 ### 常見問題
 
-1. **數據連接問題**
-   - 檢查網絡連接
-   - 驗證API密鑰
-   - 確認數據庫連接
+1. **應用無法啟動**: 運行 `./scripts/diagnostic.sh` 檢查環境
+2. **前端顯示錯誤**: 確認Node.js版本和依賴安裝
+3. **後端連接失敗**: 檢查配置文件和API密鑰
+4. **數據不更新**: 確認WebSocket連接正常
 
-2. **策略執行問題**
-   - 檢查Python環境
-   - 驗證策略參數
-   - 查看詳細日誌
+### 獲取幫助
 
-3. **通知問題**
-   - 確認Discord配置
-   - 檢查頻道權限
-   - 測試網絡連接
-
-### 日誌位置
-
-- 系統日誌: `logs/trading-bot.log`
-- 錯誤日誌: `logs/error.log`
-- 交易日誌: `logs/trades.log`
+- 📖 [故障排除指南](TROUBLESHOOTING.md)
+- 🚀 [快速開始指南](QUICK_START.md)
+- 📚 [完整用戶手冊](USER_MANUAL.md)
+- 🧪 [測試指南](TESTING_GUIDE.md)
 
 ## 📞 支持與貢獻
 
 ### 技術支持
 
-如果遇到問題，請：
-1. 查看日誌文件
-2. 檢查配置設置
-3. 參考故障排除指南
-4. 提交Issue並附上詳細信息
+- 📧 Email: support@trading-bot.com
+- 💬 Discord: [社群連結]
+- 📱 GitHub: [項目倉庫]
 
 ### 貢獻指南
 
@@ -316,12 +294,12 @@ cargo build --release
 
 本軟件僅供教育和研究目的使用。使用本軟件進行實際交易存在風險，可能導致資金損失。使用者需自行承擔所有風險，開發者不承擔任何責任。
 
-在使用真實資金進行交易前，請：
+建議：
 - 充分測試所有功能
-- 了解相關風險
-- 諮詢專業建議
+- 從演示模式開始
 - 設定適當的風險限額
+- 諮詢專業建議
 
 ---
 
-**開始你的量化交易之旅！** 🚀
+**🎯 開始您的量化交易1.0之旅！** 🚀✨
