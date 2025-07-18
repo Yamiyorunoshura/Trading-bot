@@ -7,7 +7,10 @@ import {
   BarChartOutlined,
   SettingOutlined,
   RobotOutlined,
-  ExclamationCircleOutlined
+  ExclamationCircleOutlined,
+  ThunderboltOutlined,
+  MonitorOutlined,
+  SafetyOutlined
 } from '@ant-design/icons'
 import Dashboard from './components/Dashboard'
 import StrategyManagement from './components/StrategyManagement'
@@ -15,6 +18,11 @@ import ProfitAnalysis from './components/ProfitAnalysis'
 import BacktestAnalysis from './components/BacktestAnalysis'
 import RiskManagement from './components/RiskManagement'
 import SystemSettings from './components/SystemSettings'
+import DynamicPositionStrategy from './components/DynamicPositionStrategy'
+import RealTimeTrading from './components/RealTimeTrading'
+import EnhancedRiskManagement from './components/EnhancedRiskManagement'
+import TradingSystemDashboard from './components/TradingSystemDashboard'
+import TestPage from './components/TestPage'
 import { useAppStore } from './stores/appStore'
 import './App.css'
 
@@ -26,6 +34,21 @@ const menuItems = [
     key: '/',
     icon: <DashboardOutlined />,
     label: '🚀 交易系統總覽',
+  },
+  {
+    key: '/dynamic-position',
+    icon: <ThunderboltOutlined />,
+    label: '⚡ 動態倉位策略',
+  },
+  {
+    key: '/real-time',
+    icon: <MonitorOutlined />,
+    label: '📊 實時交易監控',
+  },
+  {
+    key: '/risk-enhanced',
+    icon: <SafetyOutlined />,
+    label: '🛡️ 風險管理系統',
   },
   {
     type: 'divider' as const,
@@ -150,8 +173,12 @@ const AppContent: React.FC = () => {
           overflow: 'auto'
         }}>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<TradingSystemDashboard />} />
+            <Route path="/test" element={<TestPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dynamic-position" element={<DynamicPositionStrategy />} />
+            <Route path="/real-time" element={<RealTimeTrading />} />
+            <Route path="/risk-enhanced" element={<EnhancedRiskManagement />} />
             <Route path="/strategies" element={<StrategyManagement />} />
             <Route path="/profit" element={<ProfitAnalysis />} />
             <Route path="/backtest" element={<BacktestAnalysis />} />
