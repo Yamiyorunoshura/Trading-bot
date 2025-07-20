@@ -6,7 +6,7 @@ use std::str::FromStr;
 use tracing::{info, error};
 use tokio::sync::RwLock;
 use std::collections::HashMap;
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 use uuid::Uuid;
 use rust_decimal::prelude::FromPrimitive;
 
@@ -284,7 +284,7 @@ impl TradingEngine {
     async fn check_risk_limits(
         &self,
         symbol: &str,
-        side: OrderSide,
+        _side: OrderSide,
         quantity: rust_decimal::Decimal,
     ) -> Result<()> {
         let max_position_size = self.config.trading.max_position_size;
@@ -346,7 +346,7 @@ impl TradingEngine {
     }
 
     /// 檢查訂單狀態
-    async fn check_order_status(&self, order: &Order) -> Result<()> {
+    async fn check_order_status(&self, _order: &Order) -> Result<()> {
         // 在紙上交易模式下，訂單會立即執行，不需要檢查狀態
         if !self.config.trading.live_trading {
             return Ok(());

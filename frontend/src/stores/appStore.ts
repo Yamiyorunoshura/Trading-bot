@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import webSocketService, { WebSocketEventType } from '../services/websocket'
+import webSocketService from '../services/websocket'
 import tauriApiService from '../services/tauri'
 
 // 系統狀態接口
@@ -377,10 +377,10 @@ export const useAppStore = create<AppState>((set, get) => ({
   connectWebSocket: () => {
     const state = get()
     if (!state.isWebSocketConnected) {
-      webSocketService.connect()
+      // WebSocket 已經在構造函數中自動連接
       
       // 設置WebSocket事件監聽
-      webSocketService.subscribe('marketData', (data) => {
+      webSocketService.on('marketData', (data: any) => {
         set(state => ({
           marketData: data,
           realtimeData: {
@@ -390,7 +390,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         }))
       })
       
-      webSocketService.subscribe('systemUpdate', (data) => {
+      webSocketService.on('systemUpdate', (data: any) => {
         set(state => ({
           systemStatus: state.systemStatus ? {
             ...state.systemStatus,
@@ -405,7 +405,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         }))
       })
       
-      webSocketService.subscribe('strategyUpdate', (data) => {
+      webSocketService.on('strategyUpdate', (data: any) => {
         set(state => ({
           strategies: state.strategies.map(strategy => 
             strategy.id === data.id ? {

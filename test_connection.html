@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>連接測試</title>
+</head>
+<body>
+    <h1>交易系統連接測試</h1>
+    <div id="status">正在測試連接...</div>
+    <button onclick="testConnection()">重新測試</button>
+
+    <script>
+        async function testConnection() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = '正在測試連接...';
+            
+            try {
+                // 測試 Tauri 環境
+                if (window.__TAURI__) {
+                    statusDiv.textContent = 'Tauri 環境可用，正在測試 API...';
+                    
+                    try {
+                        const result = await window.__TAURI__.invoke('get_trading_system_status');
+                        statusDiv.innerHTML = `
+                            <h3>✅ 連接成功！</h3>
+                            <p>系統狀態：${JSON.stringify(result, null, 2)}</p>
+                        `;
+                    } catch (error) {
+                        statusDiv.innerHTML = `
+                            <h3>❌ API 調用失敗</h3>
+                            <p>錯誤：${error}</p>
+                        `;
+                    }
+                } else {
+                    statusDiv.innerHTML = `
+                        <h3>❌ Tauri 環境不可用</h3>
+                        <p>請確保在 Tauri 應用中運行</p>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <h3>❌ 測試失敗</h3>
+                    <p>錯誤：${error}</p>
+                `;
+            }
+        }
+        
+        // 頁面加載時自動測試
+        window.onload = testConnection;
+    </script>
+</body>
+</html>

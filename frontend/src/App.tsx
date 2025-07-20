@@ -10,7 +10,8 @@ import {
   ExclamationCircleOutlined,
   ThunderboltOutlined,
   MonitorOutlined,
-  SafetyOutlined
+  SafetyOutlined,
+  BugOutlined
 } from '@ant-design/icons'
 import Dashboard from './components/Dashboard'
 import StrategyManagement from './components/StrategyManagement'
@@ -20,9 +21,10 @@ import RiskManagement from './components/RiskManagement'
 import SystemSettings from './components/SystemSettings'
 import DynamicPositionStrategy from './components/DynamicPositionStrategy'
 import RealTimeTrading from './components/RealTimeTrading'
-import EnhancedRiskManagement from './components/EnhancedRiskManagement'
+import UnifiedRiskManagement from './components/UnifiedRiskManagement'
 import TradingSystemDashboard from './components/TradingSystemDashboard'
 import TestPage from './components/TestPage'
+import SystemPerformanceTest from './components/SystemPerformanceTest'
 import { useAppStore } from './stores/appStore'
 import './App.css'
 
@@ -77,6 +79,11 @@ const menuItems = [
     key: '/settings',
     icon: <SettingOutlined />,
     label: '系統設置',
+  },
+  {
+    key: '/performance-test',
+    icon: <BugOutlined />,
+    label: '🧪 性能測試',
   },
 ]
 
@@ -178,12 +185,13 @@ const AppContent: React.FC = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dynamic-position" element={<DynamicPositionStrategy />} />
             <Route path="/real-time" element={<RealTimeTrading />} />
-            <Route path="/risk-enhanced" element={<EnhancedRiskManagement />} />
+            <Route path="/risk-enhanced" element={<UnifiedRiskManagement />} />
             <Route path="/strategies" element={<StrategyManagement />} />
             <Route path="/profit" element={<ProfitAnalysis />} />
             <Route path="/backtest" element={<BacktestAnalysis />} />
             <Route path="/risk" element={<RiskManagement />} />
             <Route path="/settings" element={<SystemSettings />} />
+            <Route path="/performance-test" element={<SystemPerformanceTest />} />
           </Routes>
         </Content>
       </Layout>

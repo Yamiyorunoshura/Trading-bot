@@ -22,6 +22,7 @@ export interface StrategyConfig {
     max_position_size: number
     stop_loss_percent: number
     take_profit_percent: number
+    max_drawdown: number
   }
 }
 
@@ -103,7 +104,7 @@ class TauriApiService {
   // 系統控制API
   async startTradingBot(): Promise<boolean> {
     try {
-      const result = await invoke<boolean>('start_trading_bot')
+      const result = await invoke<boolean>('start_trading_system')
       return result
     } catch (error) {
       console.error('Failed to start trading bot:', error)
@@ -113,7 +114,7 @@ class TauriApiService {
 
   async stopTradingBot(): Promise<boolean> {
     try {
-      const result = await invoke<boolean>('stop_trading_bot')
+      const result = await invoke<boolean>('stop_trading_system')
       return result
     } catch (error) {
       console.error('Failed to stop trading bot:', error)
@@ -123,7 +124,7 @@ class TauriApiService {
 
   async getSystemStatus(): Promise<SystemStatusResponse> {
     try {
-      const result = await invoke<SystemStatusResponse>('get_system_status')
+      const result = await invoke<SystemStatusResponse>('get_trading_system_status')
       return result
     } catch (error) {
       console.error('Failed to get system status:', error)

@@ -1,9 +1,8 @@
 //! Binance API 整合
 
 use std::sync::Arc;
-use serde::{Deserialize, Serialize};
 use anyhow::Result;
-use tracing::{info, error};
+use tracing::info;
 use async_trait::async_trait;
 
 use crate::utils::Config;
@@ -20,7 +19,7 @@ pub struct BinanceApi {
 
 impl BinanceApi {
     /// 創建新的Binance API客戶端
-    pub fn new(config: Arc<Config>) -> Self {
+    pub fn new(_config: Arc<Config>) -> Self {
         // TODO: 從config中讀取API配置
         Self {
             api_key: String::new(), // 暫時為空，後續從config讀取

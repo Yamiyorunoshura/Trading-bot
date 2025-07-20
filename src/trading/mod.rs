@@ -7,7 +7,7 @@ pub mod risk;
 use anyhow::Result;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use tracing::{info, error};
+use tracing::info;
 
 use crate::data::DataManager;
 use crate::utils::Config;

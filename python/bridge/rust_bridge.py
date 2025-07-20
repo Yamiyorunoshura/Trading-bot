@@ -13,6 +13,7 @@ import traceback
 
 from strategies.base import BaseStrategy, StrategySignal, StrategyConfig
 from strategies.sma_crossover import SMACrossoverStrategy
+from strategies.dynamic_position_strategy import DynamicPositionStrategy
 from backtest.engine import run_backtest, BacktestResult
 
 logger = logging.getLogger(__name__)

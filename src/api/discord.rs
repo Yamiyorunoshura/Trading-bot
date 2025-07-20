@@ -3,11 +3,10 @@
 use anyhow::{Context, Result};
 use chrono::{DateTime, Utc};
 use reqwest::Client;
-use serde::{Deserialize, Serialize};
-use serde_json::json;
+use serde::Serialize;
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use tracing::{info, error, warn};
+use tracing::{info, warn};
 
 use crate::models::{Trade, Order, Position};
 use crate::utils::Config;
@@ -66,7 +65,7 @@ struct RateLimiter {
 
 impl DiscordNotifier {
     /// 創建新的Discord通知器
-    pub fn new(config: Arc<Config>) -> Result<Self> {
+    pub fn new(_config: Arc<Config>) -> Result<Self> {
         let client = Client::new();
         
         // TODO: 從config中讀取Discord配置

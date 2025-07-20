@@ -3,11 +3,10 @@
 //! 提供基於Web技術的桌面用戶界面
 
 use std::sync::Arc;
-use std::collections::HashMap;
 use std::time::Duration;
 use tokio::sync::RwLock;
 use serde::{Deserialize, Serialize};
-use tauri::{Manager, State, Window};
+use tauri::{State, Window};
 use trading_bot::{TradingBot, utils::Config};
 use axum::{
     extract::ws::{WebSocket, WebSocketUpgrade, Message},
@@ -68,18 +67,18 @@ pub struct MarketData {
 
 /// 初始化Tauri命令
 #[tauri::command]
-async fn init_trading_bot(
-    state: State<'_, AppState>,
+async fn init_trading_system(
+    _state: State<'_, AppState>,
     window: Window,
 ) -> Result<String, String> {
-    let mut bot_guard = state.trading_bot.write().await;
+    let mut bot_guard = _state.trading_bot.write().await;
     
     if bot_guard.is_some() {
         return Ok("交易機器人已經初始化".to_string());
     }
     
     // 創建交易機器人實例
-    let bot = TradingBot::new(state.config.clone())
+    let bot = TradingBot::new(_state.config.clone())
         .await
         .map_err(|e| format!("初始化交易機器人失敗: {}", e))?;
     
@@ -93,11 +92,11 @@ async fn init_trading_bot(
 
 /// 啟動交易機器人
 #[tauri::command]
-async fn start_trading_bot(
-    state: State<'_, AppState>,
+async fn start_trading_system(
+    _state: State<'_, AppState>,
     window: Window,
 ) -> Result<String, String> {
-    let bot_guard = state.trading_bot.read().await;
+    let bot_guard = _state.trading_bot.read().await;
     
     if let Some(bot) = bot_guard.as_ref() {
         bot.start().await.map_err(|e| format!("啟動交易機器人失敗: {}", e))?;
@@ -113,11 +112,11 @@ async fn start_trading_bot(
 
 /// 停止交易機器人
 #[tauri::command]
-async fn stop_trading_bot(
-    state: State<'_, AppState>,
+async fn stop_trading_system(
+    _state: State<'_, AppState>,
     window: Window,
 ) -> Result<String, String> {
-    let bot_guard = state.trading_bot.read().await;
+    let bot_guard = _state.trading_bot.read().await;
     
     if let Some(bot) = bot_guard.as_ref() {
         bot.stop().await.map_err(|e| format!("停止交易機器人失敗: {}", e))?;
@@ -133,10 +132,10 @@ async fn stop_trading_bot(
 
 /// 獲取系統狀態
 #[tauri::command]
-async fn get_system_status(
-    state: State<'_, AppState>,
+async fn get_trading_system_status(
+    _state: State<'_, AppState>,
 ) -> Result<SystemStatus, String> {
-    let bot_guard = state.trading_bot.read().await;
+    let bot_guard = _state.trading_bot.read().await;
     
     if let Some(bot) = bot_guard.as_ref() {
         let status = bot.get_status().await.map_err(|e| e.to_string())?;
@@ -166,7 +165,7 @@ async fn get_system_status(
 /// 獲取策略列表
 #[tauri::command]
 async fn get_strategies(
-    state: State<'_, AppState>,
+    _state: State<'_, AppState>,
 ) -> Result<Vec<StrategyInfo>, String> {
     // TODO: 實現策略列表獲取
     Ok(vec![
@@ -193,10 +192,57 @@ async fn get_strategies(
     ])
 }
 
+/// 創建策略
+#[tauri::command]
+async fn create_strategy(
+    _state: State<'_, AppState>,
+    _config: serde_json::Value,
+) -> Result<String, String> {
+    // TODO: 實現策略創建
+    let strategy_id = format!("strategy_{}", chrono::Utc::now().timestamp());
+    Ok(strategy_id)
+}
+
+/// 啟動策略
+#[tauri::command]
+async fn start_strategy(
+    _state: State<'_, AppState>,
+    _strategy_id: String,
+) -> Result<bool, String> {
+    // TODO: 實現策略啟動
+    Ok(true)
+}
+
+/// 停止策略
+#[tauri::command]
+async fn stop_strategy(
+    _state: State<'_, AppState>,
+    _strategy_id: String,
+) -> Result<bool, String> {
+    // TODO: 實現策略停止
+    Ok(true)
+}
+
+/// 刪除策略
+#[tauri::command]
+async fn delete_strategy(
+    _state: State<'_, AppState>,
+    _strategy_id: String,
+) -> Result<bool, String> {
+    // TODO: 實現策略刪除
+    Ok(true)
+}
+
+/// Ping 命令用於檢查 Tauri 環境
+#[tauri::command]
+async fn ping() -> Result<String, String> {
+    Ok("pong".to_string())
+}
+
 /// 獲取市場數據
 #[tauri::command]
 async fn get_market_data(
-    state: State<'_, AppState>,
+    _state: State<'_, AppState>,
 ) -> Result<Vec<MarketData>, String> {
     // TODO: 實現市場數據獲取
     Ok(vec![
@@ -313,11 +359,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tauri::Builder::default()
         .manage(state)
         .invoke_handler(tauri::generate_handler![
-            init_trading_bot,
-            start_trading_bot,
-            stop_trading_bot,
-            get_system_status,
+            init_trading_system,
+            start_trading_system,
+            stop_trading_system,
+            get_trading_system_status,
             get_strategies,
+            create_strategy,
+            start_strategy,
+            stop_strategy,
+            delete_strategy,
+            ping,
             get_market_data
         ])
         .run(tauri::generate_context!())

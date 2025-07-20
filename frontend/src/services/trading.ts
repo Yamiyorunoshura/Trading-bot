@@ -6,6 +6,104 @@
 import { invoke } from '@tauri-apps/api/tauri'
 import { listen } from '@tauri-apps/api/event'
 
+// 檢查是否在Tauri環境中運行
+const isTauriAvailable = () => {
+  return typeof window !== 'undefined' && window.__TAURI_IPC__;
+}
+
+// 模擬數據生成器
+const generateMockData = () => {
+  const mockSystemStatus = {
+    trading_status: {
+      state: 'running' as const,
+      start_time: new Date().toISOString(),
+      uptime: '2h 15m',
+      processed_signals: 156,
+      executed_orders: 23,
+      failed_orders: 1,
+      last_update: new Date().toISOString()
+    },
+    execution_status: {
+      account: {
+        total_equity: 12500.50,
+        available_balance: 8500.25,
+        used_margin: 4000.25,
+        unrealized_pnl: 1250.75,
+        realized_pnl: 850.50,
+        positions: {}
+      },
+      orders: {
+        total_orders: 45,
+        pending_orders: 2,
+        filled_orders: 42,
+        failed_orders: 1
+      },
+      statistics: {
+        total_orders: 45,
+        successful_orders: 42,
+        failed_orders: 1,
+        total_volume: 125000.50,
+        total_fees: 125.25
+      },
+      risk_status: {
+        position_ratio: 0.32,
+        leverage_usage: 0.15,
+        drawdown: 0.08,
+        risk_level: 'medium'
+      }
+    },
+    risk_metrics: {
+      total_equity: 12500.50,
+      leverage_ratio: 0.15,
+      current_drawdown: 0.08,
+      max_drawdown: 0.12,
+      position_count: 3,
+      largest_position_ratio: 0.25,
+      liquidity_score: 0.85,
+      portfolio_correlation: 0.45,
+      overall_risk_level: 'medium' as const,
+      timestamp: new Date().toISOString()
+    },
+    active_alerts: [
+      {
+        type: 'leverage_warning' as const,
+        level: 'medium' as const,
+        message: '槓桿使用率接近限制',
+        current_value: 0.15,
+        threshold: 0.20,
+        timestamp: new Date().toISOString(),
+        resolved: false
+      }
+    ],
+    market_data: {
+      'BTCUSDT': {
+        symbol: 'BTCUSDT',
+        price: 43250.50,
+        volume: 125000000,
+        timestamp: Date.now(),
+        bid: 43245.00,
+        ask: 43255.00,
+        high_24h: 43500.00,
+        low_24h: 42800.00,
+        change_24h: 2.85
+      },
+      'ETHUSDT': {
+        symbol: 'ETHUSDT',
+        price: 2850.75,
+        volume: 85000000,
+        timestamp: Date.now(),
+        bid: 2848.00,
+        ask: 2853.00,
+        high_24h: 2900.00,
+        low_24h: 2800.00,
+        change_24h: -1.25
+      }
+    }
+  };
+
+  return mockSystemStatus;
+};
+
 // 訂單相關接口
 export interface Order {
   id: string
@@ -194,209 +292,495 @@ export class TradingSystemAPI {
   
   // 獲取交易系統狀態
   static async getSystemStatus(): Promise<SystemStatus> {
-    return await invoke('get_trading_system_status')
+    if (isTauriAvailable()) {
+      return await invoke('get_trading_system_status')
+    } else {
+      // 返回模擬數據
+      return generateMockData() as SystemStatus;
+    }
   }
   
   // 啟動交易系統
   static async startTrading(): Promise<boolean> {
-    return await invoke('start_trading_system')
+    if (isTauriAvailable()) {
+      return await invoke('start_trading_system')
+    } else {
+      // 模擬成功
+      return true;
+    }
   }
   
   // 停止交易系統
   static async stopTrading(): Promise<boolean> {
-    return await invoke('stop_trading_system')
+    if (isTauriAvailable()) {
+      return await invoke('stop_trading_system')
+    } else {
+      // 模擬成功
+      return true;
+    }
   }
   
-  // 暫停交易
+  // 暫停交易系統
   static async pauseTrading(): Promise<boolean> {
-    return await invoke('pause_trading')
+    if (isTauriAvailable()) {
+      return await invoke('pause_trading_system')
+    } else {
+      // 模擬成功
+      return true;
+    }
   }
   
-  // 恢復交易
+  // 恢復交易系統
   static async resumeTrading(): Promise<boolean> {
-    return await invoke('resume_trading')
+    if (isTauriAvailable()) {
+      return await invoke('resume_trading_system')
+    } else {
+      // 模擬成功
+      return true;
+    }
   }
   
   // 緊急停止
   static async emergencyStop(): Promise<boolean> {
-    return await invoke('emergency_stop')
+    if (isTauriAvailable()) {
+      return await invoke('emergency_stop')
+    } else {
+      // 模擬成功
+      return true;
+    }
   }
   
   // 獲取策略配置
   static async getStrategyConfig(): Promise<DynamicPositionConfig> {
-    return await invoke('get_strategy_config')
+    if (isTauriAvailable()) {
+      return await invoke('get_strategy_config')
+    } else {
+      // 返回模擬配置
+      return {
+        name: '動態倉位策略',
+        symbol: 'BTCUSDT',
+        risk_mode: 'balanced',
+        leverage_config: {
+          max_leverage: 10,
+          leverage_usage_rate: 0.15,
+          dynamic_leverage: true
+        },
+        indicator_weights: {
+          valuation_weight: 0.4,
+          risk_adjusted_weight: 0.4,
+          fundamental_weight: 0.2
+        },
+        trading_config: {
+          buy_threshold: 0.6,
+          sell_threshold: 0.4,
+          position_size_base: 1000,
+          max_position_count: 5
+        },
+        risk_management: {
+          stop_loss_percent: 2.0,
+          take_profit_percent: 4.0,
+          max_drawdown_percent: 10.0,
+          daily_loss_limit: 500
+        }
+      };
+    }
   }
   
   // 更新策略配置
   static async updateStrategyConfig(config: DynamicPositionConfig): Promise<boolean> {
-    return await invoke('update_strategy_config', { config })
+    if (isTauriAvailable()) {
+      return await invoke('update_strategy_config', { config })
+    } else {
+      // 模擬成功
+      return true;
+    }
   }
   
   // 獲取賬戶信息
   static async getAccountInfo(): Promise<Account> {
-    return await invoke('get_account_info')
+    if (isTauriAvailable()) {
+      return await invoke('get_account_info')
+    } else {
+      // 返回模擬數據
+      const mockData = generateMockData();
+      return mockData.execution_status.account;
+    }
   }
   
   // 獲取持倉信息
   static async getPositions(): Promise<Record<string, Position>> {
-    return await invoke('get_positions')
+    if (isTauriAvailable()) {
+      return await invoke('get_positions')
+    } else {
+      // 返回模擬數據
+      return {
+        'BTCUSDT': {
+          symbol: 'BTCUSDT',
+          side: 'buy',
+          size: 0.023,
+          entry_price: 42800.00,
+          current_price: 43250.50,
+          leverage: 5,
+          unrealized_pnl: 103.65,
+          realized_pnl: 0,
+          margin_used: 196.88,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      };
+    }
   }
   
   // 獲取訂單歷史
-  static async getOrderHistory(limit?: number): Promise<Order[]> {
-    return await invoke('get_order_history', { limit })
+  static async getOrderHistory(limit: number = 20): Promise<Order[]> {
+    if (isTauriAvailable()) {
+      return await invoke('get_order_history', { limit })
+    } else {
+      // 返回模擬數據
+      return [
+        {
+          id: 'order_001',
+          symbol: 'BTCUSDT',
+          side: 'buy',
+          type: 'market',
+          quantity: 0.023,
+          price: 43250.50,
+          leverage: 5,
+          status: 'filled',
+          filled_quantity: 0.023,
+          filled_price: 43250.50,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ];
+    }
   }
   
-  // 手動下單
+  // 下單
   static async placeOrder(order: Partial<Order>): Promise<Order> {
-    return await invoke('place_manual_order', { order })
+    if (isTauriAvailable()) {
+      return await invoke('place_order', { order })
+    } else {
+      // 模擬下單成功
+      return {
+        id: `order_${Date.now()}`,
+        symbol: order.symbol || 'BTCUSDT',
+        side: order.side || 'buy',
+        type: order.type || 'market',
+        quantity: order.quantity || 0.01,
+        price: order.price || 43250.50,
+        leverage: order.leverage || 1,
+        status: 'filled',
+        filled_quantity: order.quantity || 0.01,
+        filled_price: order.price || 43250.50,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      } as Order;
+    }
   }
   
   // 取消訂單
   static async cancelOrder(orderId: string): Promise<boolean> {
-    return await invoke('cancel_order', { orderId })
+    if (isTauriAvailable()) {
+      return await invoke('cancel_order', { orderId })
+    } else {
+      // 模擬成功
+      return true;
+    }
   }
   
   // 平倉
   static async closePosition(symbol: string): Promise<boolean> {
-    return await invoke('close_position', { symbol })
+    if (isTauriAvailable()) {
+      return await invoke('close_position', { symbol })
+    } else {
+      // 模擬成功
+      return true;
+    }
   }
   
-  // 平倉所有持倉
+  // 平掉所有持倉
   static async closeAllPositions(): Promise<number> {
-    return await invoke('close_all_positions')
+    if (isTauriAvailable()) {
+      return await invoke('close_all_positions')
+    } else {
+      // 模擬成功
+      return 1;
+    }
   }
   
-  // 獲取策略性能指標
+  // 獲取策略性能
   static async getStrategyPerformance(): Promise<StrategyPerformance> {
-    return await invoke('get_strategy_performance')
+    if (isTauriAvailable()) {
+      return await invoke('get_strategy_performance')
+    } else {
+      // 返回模擬數據
+      return {
+        total_return: 1250.75,
+        return_percentage: 10.0,
+        sharpe_ratio: 1.85,
+        max_drawdown: 0.08,
+        win_rate: 0.68,
+        profit_factor: 2.15,
+        total_trades: 45,
+        winning_trades: 31,
+        losing_trades: 14,
+        average_win: 85.50,
+        average_loss: 35.25,
+        volatility: 0.12,
+        start_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        end_date: new Date().toISOString()
+      };
+    }
   }
   
   // 獲取風險指標
   static async getRiskMetrics(): Promise<RiskMetrics> {
-    return await invoke('get_risk_metrics')
+    if (isTauriAvailable()) {
+      return await invoke('get_risk_metrics')
+    } else {
+      // 返回模擬數據
+      const mockData = generateMockData();
+      return mockData.risk_metrics;
+    }
   }
   
   // 獲取風險警報
   static async getRiskAlerts(): Promise<RiskAlert[]> {
-    return await invoke('get_risk_alerts')
+    if (isTauriAvailable()) {
+      return await invoke('get_risk_alerts')
+    } else {
+      // 返回模擬數據
+      const mockData = generateMockData();
+      return mockData.active_alerts;
+    }
   }
   
   // 解決風險警報
   static async resolveRiskAlert(alertId: string): Promise<boolean> {
-    return await invoke('resolve_risk_alert', { alertId })
+    if (isTauriAvailable()) {
+      return await invoke('resolve_risk_alert', { alertId })
+    } else {
+      // 模擬成功
+      return true;
+    }
   }
   
   // 獲取市場數據
   static async getMarketData(symbol: string): Promise<MarketData> {
-    return await invoke('get_market_data', { symbol })
+    if (isTauriAvailable()) {
+      return await invoke('get_market_data', { symbol })
+    } else {
+      // 返回模擬數據
+      const mockData = generateMockData();
+      const marketData = mockData.market_data as Record<string, MarketData>;
+      return marketData[symbol] || {
+        symbol,
+        price: 43250.50,
+        volume: 125000000,
+        timestamp: Date.now(),
+        bid: 43245.00,
+        ask: 43255.00,
+        high_24h: 43500.00,
+        low_24h: 42800.00,
+        change_24h: 2.85
+      };
+    }
   }
   
   // 獲取交易信號
-  static async getTradingSignals(symbol: string, limit?: number): Promise<TradingSignal[]> {
-    return await invoke('get_trading_signals', { symbol, limit })
+  static async getTradingSignals(symbol: string, limit: number = 10): Promise<TradingSignal[]> {
+    if (isTauriAvailable()) {
+      return await invoke('get_trading_signals', { symbol, limit })
+    } else {
+      // 返回模擬數據
+      return [
+        {
+          symbol,
+          signal_type: 'buy',
+          strength: 0.75,
+          price: 43250.50,
+          timestamp: new Date().toISOString(),
+          metadata: { indicator: 'SMA_CROSS' }
+        }
+      ];
+    }
   }
   
   // 獲取歷史性能數據
   static async getHistoricalPerformance(hours: number = 24): Promise<any[]> {
-    return await invoke('get_historical_performance', { hours })
+    if (isTauriAvailable()) {
+      return await invoke('get_historical_performance', { hours })
+    } else {
+      // 返回模擬數據
+      const data = [];
+      const now = Date.now();
+      for (let i = hours; i >= 0; i--) {
+        data.push({
+          time: new Date(now - i * 60 * 60 * 1000).toISOString(),
+          equity: 10000 + Math.random() * 2500,
+          pnl: (Math.random() - 0.5) * 200,
+          drawdown: Math.random() * 0.1
+        });
+      }
+      return data;
+    }
   }
   
-  // 獲取回測結果
+  // 運行回測
   static async runBacktest(config: DynamicPositionConfig, startDate: string, endDate: string): Promise<any> {
-    return await invoke('run_backtest', { config, startDate, endDate })
+    if (isTauriAvailable()) {
+      return await invoke('run_backtest', { config, startDate, endDate })
+    } else {
+      // 返回模擬回測結果
+      return {
+        total_return: 1250.75,
+        sharpe_ratio: 1.85,
+        max_drawdown: 0.08,
+        win_rate: 0.68,
+        trades: 45
+      };
+    }
   }
   
   // 驗證策略配置
   static async validateStrategyConfig(config: DynamicPositionConfig): Promise<boolean> {
-    return await invoke('validate_strategy_config', { config })
+    if (isTauriAvailable()) {
+      return await invoke('validate_strategy_config', { config })
+    } else {
+      // 模擬驗證成功
+      return true;
+    }
   }
   
   // 重置系統
   static async resetSystem(): Promise<boolean> {
-    return await invoke('reset_trading_system')
+    if (isTauriAvailable()) {
+      return await invoke('reset_system')
+    } else {
+      // 模擬成功
+      return true;
+    }
   }
   
   // 導出交易數據
   static async exportTradingData(format: 'csv' | 'json' = 'csv'): Promise<string> {
-    return await invoke('export_trading_data', { format })
+    if (isTauriAvailable()) {
+      return await invoke('export_trading_data', { format })
+    } else {
+      // 模擬成功
+      return 'trading_data.csv';
+    }
   }
   
   // 導入策略配置
   static async importStrategyConfig(configData: string): Promise<DynamicPositionConfig> {
-    return await invoke('import_strategy_config', { configData })
+    if (isTauriAvailable()) {
+      return await invoke('import_strategy_config', { configData })
+    } else {
+      // 返回默認配置
+      return this.getStrategyConfig();
+    }
   }
 }
 
 // 交易系統事件監聽器
 export class TradingSystemEventListener {
   
-  // 監聽交易狀態變化
   static async onTradingStatusChange(callback: (status: TradingStatus) => void) {
-    return await listen('trading_status_changed', (event) => {
-      callback(event.payload as TradingStatus)
-    })
+    if (isTauriAvailable()) {
+      await listen('trading_status_change', (event) => {
+        callback(event.payload as TradingStatus);
+      });
+    } else {
+      // 模擬事件監聽
+      console.log('Trading status change listener registered (mock mode)');
+    }
   }
   
-  // 監聽訂單執行
   static async onOrderExecuted(callback: (order: Order) => void) {
-    return await listen('order_executed', (event) => {
-      callback(event.payload as Order)
-    })
+    if (isTauriAvailable()) {
+      await listen('order_executed', (event) => {
+        callback(event.payload as Order);
+      });
+    } else {
+      // 模擬事件監聽
+      console.log('Order executed listener registered (mock mode)');
+    }
   }
   
-  // 監聽持倉更新
   static async onPositionUpdated(callback: (position: Position) => void) {
-    return await listen('position_updated', (event) => {
-      callback(event.payload as Position)
-    })
+    if (isTauriAvailable()) {
+      await listen('position_updated', (event) => {
+        callback(event.payload as Position);
+      });
+    } else {
+      // 模擬事件監聽
+      console.log('Position updated listener registered (mock mode)');
+    }
   }
   
-  // 監聽風險警報
   static async onRiskAlert(callback: (alert: RiskAlert) => void) {
-    return await listen('risk_alert', (event) => {
-      callback(event.payload as RiskAlert)
-    })
+    if (isTauriAvailable()) {
+      await listen('risk_alert', (event) => {
+        callback(event.payload as RiskAlert);
+      });
+    } else {
+      // 模擬事件監聽
+      console.log('Risk alert listener registered (mock mode)');
+    }
   }
   
-  // 監聽市場數據更新
   static async onMarketDataUpdate(callback: (data: MarketData) => void) {
-    return await listen('market_data_updated', (event) => {
-      callback(event.payload as MarketData)
-    })
+    if (isTauriAvailable()) {
+      await listen('market_data_update', (event) => {
+        callback(event.payload as MarketData);
+      });
+    } else {
+      // 模擬事件監聽
+      console.log('Market data update listener registered (mock mode)');
+    }
   }
   
-  // 監聽交易信號
   static async onTradingSignal(callback: (signal: TradingSignal) => void) {
-    return await listen('trading_signal', (event) => {
-      callback(event.payload as TradingSignal)
-    })
+    if (isTauriAvailable()) {
+      await listen('trading_signal', (event) => {
+        callback(event.payload as TradingSignal);
+      });
+    } else {
+      // 模擬事件監聽
+      console.log('Trading signal listener registered (mock mode)');
+    }
   }
   
-  // 監聽系統錯誤
   static async onSystemError(callback: (error: { message: string; timestamp: string }) => void) {
-    return await listen('system_error', (event) => {
-      callback(event.payload as { message: string; timestamp: string })
-    })
+    if (isTauriAvailable()) {
+      await listen('system_error', (event) => {
+        callback(event.payload as { message: string; timestamp: string });
+      });
+    } else {
+      // 模擬事件監聽
+      console.log('System error listener registered (mock mode)');
+    }
   }
 }
 
-// 交易系統工具函數
+// 交易系統工具類
 export class TradingSystemUtils {
   
   // 格式化價格
   static formatPrice(price: number, precision: number = 2): string {
-    return price.toFixed(precision)
+    return price.toFixed(precision);
   }
   
   // 格式化百分比
   static formatPercentage(value: number, precision: number = 2): string {
-    return `${(value * 100).toFixed(precision)}%`
+    return `${(value * 100).toFixed(precision)}%`;
   }
   
   // 格式化時間
   static formatTime(timestamp: string | number): string {
-    const date = new Date(timestamp)
+    const date = new Date(timestamp);
     return date.toLocaleString('zh-TW', {
       year: 'numeric',
       month: '2-digit',
@@ -404,82 +788,71 @@ export class TradingSystemUtils {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit'
-    })
+    });
   }
   
-  // 計算盈虧顏色
+  // 獲取盈虧顏色
   static getPnlColor(pnl: number): string {
-    if (pnl > 0) return '#52c41a'
-    if (pnl < 0) return '#f5222d'
-    return '#666666'
+    if (pnl > 0) return '#52c41a';
+    if (pnl < 0) return '#f5222d';
+    return '#1890ff';
   }
   
-  // 計算風險等級顏色
+  // 獲取風險等級顏色
   static getRiskLevelColor(level: string): string {
     switch (level) {
-      case 'low': return '#52c41a'
-      case 'medium': return '#faad14'
-      case 'high': return '#fa8c16'
-      case 'critical': return '#f5222d'
-      default: return '#666666'
+      case 'low': return '#52c41a';
+      case 'medium': return '#faad14';
+      case 'high': return '#fa8c16';
+      case 'critical': return '#f5222d';
+      default: return '#1890ff';
     }
   }
   
-  // 計算風險等級圖標
+  // 獲取風險等級圖標
   static getRiskLevelIcon(level: string): string {
     switch (level) {
-      case 'low': return '🟢'
-      case 'medium': return '🟡'
-      case 'high': return '🟠'
-      case 'critical': return '🔴'
-      default: return '⚪'
+      case 'low': return '🟢';
+      case 'medium': return '🟡';
+      case 'high': return '🟠';
+      case 'critical': return '🔴';
+      default: return '🔵';
     }
   }
   
   // 驗證交易參數
   static validateTradingParams(params: any): { valid: boolean; errors: string[] } {
-    const errors: string[] = []
+    const errors: string[] = [];
     
-    if (!params.symbol || typeof params.symbol !== 'string') {
-      errors.push('交易對不能為空')
-    }
-    
-    if (!params.quantity || params.quantity <= 0) {
-      errors.push('交易數量必須大於0')
-    }
-    
-    if (params.leverage && (params.leverage < 1 || params.leverage > 10)) {
-      errors.push('杠桿倍數必須在1-10之間')
-    }
-    
-    if (params.price && params.price <= 0) {
-      errors.push('價格必須大於0')
+    if (!params.symbol) errors.push('交易對不能為空');
+    if (!params.quantity || params.quantity <= 0) errors.push('數量必須大於0');
+    if (params.price && params.price <= 0) errors.push('價格必須大於0');
+    if (params.leverage && (params.leverage < 1 || params.leverage > 100)) {
+      errors.push('槓桿倍數必須在1-100之間');
     }
     
     return {
       valid: errors.length === 0,
       errors
-    }
+    };
   }
   
   // 計算保證金
   static calculateMargin(quantity: number, price: number, leverage: number): number {
-    return (quantity * price) / leverage
+    return (quantity * price) / leverage;
   }
   
   // 計算盈虧
   static calculatePnl(side: string, entryPrice: number, currentPrice: number, quantity: number): number {
     if (side === 'buy') {
-      return (currentPrice - entryPrice) * quantity
+      return (currentPrice - entryPrice) * quantity;
     } else {
-      return (entryPrice - currentPrice) * quantity
+      return (entryPrice - currentPrice) * quantity;
     }
   }
   
   // 計算收益率
   static calculateReturnRate(pnl: number, initialCapital: number): number {
-    return pnl / initialCapital
+    return pnl / initialCapital;
   }
 }
-
-export default TradingSystemAPI

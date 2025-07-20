@@ -20,6 +20,14 @@ from ..strategies.dynamic_position_strategy import DynamicPositionStrategy
 logger = logging.getLogger(__name__)
 
 
+class TradingMode(Enum):
+    """交易模式"""
+    LIVE = "live"          # 實盤交易
+    SIMULATED = "simulated"  # 模擬交易
+    PAPER = "paper"        # 紙上交易
+    BACKTEST = "backtest"  # 回測交易
+
+
 class OrderType(Enum):
     """訂單類型"""
     MARKET = "market"      # 市價單
@@ -51,7 +59,7 @@ class Order:
     side: OrderSide
     type: OrderType
     quantity: float
-    price: Optional[float] = None
+    price: float
     leverage: float = 1.0
     status: OrderStatus = OrderStatus.PENDING
     filled_quantity: float = 0.0
@@ -367,7 +375,8 @@ class ExecutionEngine:
                 
                 # 更新統計
                 self.trade_stats['successful_orders'] += 1
-                self.trade_stats['total_volume'] += order.quantity * order.price
+                if order.price is not None:
+                    self.trade_stats['total_volume'] += order.quantity * order.price
                 
                 logger.info(f"訂單執行成功: {order.id}")
                 return True
@@ -398,7 +407,7 @@ class ExecutionEngine:
             return False
         
         # 檢查價格合理性
-        if order.price <= 0:
+        if order.price is None or order.price <= 0:
             logger.warning("訂單價格無效")
             return False
         

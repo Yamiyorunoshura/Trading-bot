@@ -114,7 +114,7 @@ const TradingSystemDashboard: React.FC<TradingSystemDashboardProps> = ({
   const criticalAlerts = tradingSelectors.getCriticalAlerts(useTradingStore.getState())
   
   // 渲染系統狀態概覽
-  const renderSystemOverview = () => {
+  const renderCoreMetrics = () => {
     if (!systemStatus) return null
     
     const { trading_status, execution_status, risk_metrics } = systemStatus
@@ -124,16 +124,14 @@ const TradingSystemDashboard: React.FC<TradingSystemDashboardProps> = ({
         <Col span={6}>
           <Card size="small">
             <Statistic
-              title="系統狀態"
-              value={trading_status.state}
+              title="活躍訂單"
+              value={tradingStats.totalOrders}
               valueStyle={{ 
-                color: trading_status.state === 'running' ? '#52c41a' : '#faad14',
-                fontSize: '18px'
+                color: '#52c41a'
               }}
               prefix={
                 trading_status.state === 'running' ? 
-                <PlayCircleOutlined style={{ color: '#52c41a' }} /> : 
-                <PauseCircleOutlined style={{ color: '#faad14' }} />
+                <MonitorOutlined /> : null
               }
             />
           </Card>
@@ -242,9 +240,6 @@ const TradingSystemDashboard: React.FC<TradingSystemDashboardProps> = ({
               status={isConnected ? 'success' : 'error'}
               text={isConnected ? '已連接' : '連接斷開'}
             />
-            <span style={{ marginLeft: '16px', fontSize: '12px', color: '#666' }}>
-              最後更新: {lastUpdate ? TradingSystemUtils.formatTime(lastUpdate) : '從未'}
-            </span>
           </div>
         </Space>
       </Card>
@@ -442,7 +437,7 @@ const TradingSystemDashboard: React.FC<TradingSystemDashboardProps> = ({
     return (
       <Card title="風險警報" size="small">
         <Timeline>
-          {recentAlerts.map((alert, index) => (
+          {recentAlerts.map((alert: any, index: number) => (
             <Timeline.Item
               key={index}
               color={TradingSystemUtils.getRiskLevelColor(alert.level)}
@@ -504,9 +499,6 @@ const TradingSystemDashboard: React.FC<TradingSystemDashboardProps> = ({
           <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: 0 }}>
             🚀 動態倉位策略交易系統
           </h1>
-          <p style={{ fontSize: '16px', color: '#666', marginTop: '8px' }}>
-            第三階段用戶界面開發完成 - 完整的量化交易機器人平台
-          </p>
         </div>
         
         {/* 緊急警報 */}
@@ -521,7 +513,7 @@ const TradingSystemDashboard: React.FC<TradingSystemDashboardProps> = ({
         )}
         
         {/* 系統狀態概覽 */}
-        {renderSystemOverview()}
+        {renderCoreMetrics()}
         
         {/* 控制面板 */}
         {renderControlPanel()}
@@ -554,43 +546,7 @@ const TradingSystemDashboard: React.FC<TradingSystemDashboardProps> = ({
           </Col>
         </Row>
         
-        {/* 系統信息 */}
-        <Card title="系統信息" size="small">
-          <Row gutter={[16, 16]}>
-            <Col span={6}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#1890ff' }}>
-                  第三階段
-                </div>
-                <div style={{ color: '#666' }}>開發階段</div>
-              </div>
-            </Col>
-            <Col span={6}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#52c41a' }}>
-                  100%
-                </div>
-                <div style={{ color: '#666' }}>完成度</div>
-              </div>
-            </Col>
-            <Col span={6}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#fa8c16' }}>
-                  7天
-                </div>
-                <div style={{ color: '#666' }}>開發時間</div>
-              </div>
-            </Col>
-            <Col span={6}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#722ed1' }}>
-                  A+
-                </div>
-                <div style={{ color: '#666' }}>品質等級</div>
-              </div>
-            </Col>
-          </Row>
-        </Card>
+
       </Space>
     </div>
   )
