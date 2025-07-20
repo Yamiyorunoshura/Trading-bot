@@ -585,48 +585,165 @@ const RealTimeTrading: React.FC<RealTimeTradingProps> = ({
   }
   
   return (
-    <div style={{ padding: '24px' }}>
+    <div className="neon-dashboard fadeInUp" style={{ padding: '24px', minHeight: '100vh' }}>
       <Space direction="vertical" style={{ width: '100%' }} size="large">
-        {/* 頁面標題 */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <h2>實時交易監控</h2>
-            <p>實時監控市場數據、交易信號和系統狀態</p>
+        {/* 霓虹未來風格頁面標題 */}
+        <div className="fadeInUp" style={{ marginBottom: '20px', animationDelay: '0.1s' }}>
+          <h1 style={{ 
+            fontSize: '32px', 
+            fontWeight: 'var(--font-weight-semibold)', 
+            margin: 0,
+            color: 'var(--text-primary)',
+            textShadow: '0 0 20px rgba(0, 245, 212, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <LineChartOutlined style={{ fontSize: '36px', color: 'var(--accent-color)' }} />
+            實時交易監控系統
+          </h1>
+          <div style={{ 
+            marginTop: '8px', 
+            color: 'var(--text-secondary)',
+            fontSize: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className={`neon-status-indicator ${isConnected ? 'online pulse' : 'offline'}`}></span>
+                <span style={{ 
+                  color: isConnected ? 'var(--profit-green)' : 'var(--loss-red)',
+                  fontWeight: 'var(--font-weight-medium)'
+                }}>
+                  {isConnected ? '實時數據流已連接' : '數據連接異常'}
+                </span>
+              </div>
+              <div>|</div>
+              <div>
+                監控交易對: <span style={{ color: 'var(--accent-color)' }}>{symbol}</span>
+              </div>
+            </div>
+            <Button 
+              className="neon-button"
+              icon={<SyncOutlined />} 
+              onClick={initializeMonitoring}
+              style={{
+                borderColor: 'var(--accent-color)',
+                color: 'var(--accent-color)',
+                height: '36px',
+                padding: '0 16px',
+                fontWeight: 'var(--font-weight-medium)'
+              }}
+            >
+              刷新實時數據
+            </Button>
           </div>
-          <Button icon={<SyncOutlined />} onClick={initializeMonitoring}>
-            刷新數據
-          </Button>
         </div>
         
-        {/* 市場數據 */}
-        {renderMarketDataCard()}
+        {/* 市場數據 - 霓虹面板 */}
+        <div className="fadeInUp" style={{ animationDelay: '0.2s' }}>
+          {renderMarketDataCard()}
+        </div>
         
-        {/* 性能指標 */}
-        {renderPerformanceCard()}
+        {/* 性能指標 - 霓虹面板 */}
+        <div className="fadeInUp" style={{ animationDelay: '0.3s' }}>
+          {renderPerformanceCard()}
+        </div>
         
-        {/* 圖表區域 */}
-        <Row gutter={16}>
+        {/* 圖表區域 - 霓虹面板 */}
+        <Row gutter={16} className="fadeInUp" style={{ animationDelay: '0.4s' }}>
           <Col span={18}>
-            {renderPriceChart()}
+            <div className="neon-panel">
+              {renderPriceChart()}
+            </div>
           </Col>
           <Col span={6}>
-            {renderRiskGauge()}
+            <div className="neon-panel">
+              {renderRiskGauge()}
+            </div>
           </Col>
         </Row>
         
-        {/* 數據表格 */}
-        <Tabs defaultActiveKey="signals">
-          <TabPane tab="交易信號" key="signals">
-            {renderSignalsList()}
-          </TabPane>
-          <TabPane tab="訂單歷史" key="orders">
-            {renderOrdersList()}
-          </TabPane>
-          <TabPane tab="風險警報" key="alerts">
-            {renderAlertsTimeline()}
-          </TabPane>
-        </Tabs>
+        {/* 數據表格 - 霓虹標籤頁 */}
+        <div className="neon-panel fadeInUp" style={{ animationDelay: '0.5s' }}>
+          <Tabs 
+            defaultActiveKey="signals"
+            items={[
+              {
+                key: 'signals',
+                label: (
+                  <span style={{ 
+                    color: 'var(--text-primary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <SignalFilled />
+                    交易信號
+                  </span>
+                ),
+                children: (
+                  <div style={{ background: 'var(--bg-panel)', borderRadius: '8px', padding: '16px' }}>
+                    {renderSignalsList()}
+                  </div>
+                )
+              },
+              {
+                key: 'orders',
+                label: (
+                  <span style={{ 
+                    color: 'var(--text-primary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <DollarOutlined />
+                    訂單歷史
+                  </span>
+                ),
+                children: (
+                  <div style={{ background: 'var(--bg-panel)', borderRadius: '8px', padding: '16px' }}>
+                    {renderOrdersList()}
+                  </div>
+                )
+              },
+              {
+                key: 'alerts',
+                label: (
+                  <span style={{ 
+                    color: 'var(--text-primary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <AlertOutlined />
+                    風險警報
+                  </span>
+                ),
+                children: (
+                  <div style={{ background: 'var(--bg-panel)', borderRadius: '8px', padding: '16px' }}>
+                    {renderAlertsTimeline()}
+                  </div>
+                )
+              }
+            ]}
+          />
+        </div>
       </Space>
+      
+      {/* 背景裝飾效果 */}
+      <div className="neon-background-effect" style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        pointerEvents: 'none',
+        zIndex: -1,
+        background: 'radial-gradient(circle at 20% 80%, rgba(0, 245, 212, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 77, 109, 0.02) 0%, transparent 50%)'
+      }} />
     </div>
   )
 }

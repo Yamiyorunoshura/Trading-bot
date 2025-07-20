@@ -113,7 +113,7 @@ const TradingSystemDashboard: React.FC<TradingSystemDashboardProps> = ({
   const activeAlerts = tradingSelectors.getActiveAlerts(useTradingStore.getState())
   const criticalAlerts = tradingSelectors.getCriticalAlerts(useTradingStore.getState())
   
-  // 渲染系統狀態概覽
+  // 渲染系統狀態概覽 - 霓虹未來風格
   const renderCoreMetrics = () => {
     if (!systemStatus) return null
     
@@ -122,53 +122,134 @@ const TradingSystemDashboard: React.FC<TradingSystemDashboardProps> = ({
     return (
       <Row gutter={[16, 16]}>
         <Col span={6}>
-          <Card size="small">
+          <Card 
+            className="neon-panel trading-card"
+            size="small"
+            style={{
+              background: 'var(--bg-panel)',
+              border: '1px solid var(--border-color)',
+              transition: 'all var(--animation-normal) ease'
+            }}
+          >
             <Statistic
-              title="活躍訂單"
+              title={
+                <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
+                  <MonitorOutlined style={{ marginRight: '8px' }} />
+                  活躍訂單
+                </span>
+              }
               value={tradingStats.totalOrders}
               valueStyle={{ 
-                color: '#52c41a'
+                color: 'var(--profit-green)',
+                fontSize: '24px',
+                fontWeight: 'var(--font-weight-semibold)',
+                textShadow: trading_status.state === 'running' ? 
+                  '0 0 8px rgba(41, 221, 196, 0.5)' : 'none'
               }}
               prefix={
                 trading_status.state === 'running' ? 
-                <MonitorOutlined /> : null
+                <span className="neon-status-indicator online pulse"></span> : null
               }
             />
           </Card>
         </Col>
         
         <Col span={6}>
-          <Card size="small">
+          <Card 
+            className="neon-panel trading-card"
+            size="small"
+            style={{
+              background: 'var(--bg-panel)',
+              border: '1px solid var(--border-color)',
+              transition: 'all var(--animation-normal) ease'
+            }}
+          >
             <Statistic
-              title="賬戶權益"
+              title={
+                <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
+                  <DollarOutlined style={{ marginRight: '8px' }} />
+                  賬戶權益
+                </span>
+              }
               value={execution_status.account.total_equity}
               precision={2}
-              valueStyle={{ color: '#1890ff' }}
-              prefix={<DollarOutlined />}
-              suffix="USDT"
+              valueStyle={{ 
+                color: 'var(--accent-color)',
+                fontSize: '24px',
+                fontWeight: 'var(--font-weight-semibold)',
+                textShadow: '0 0 8px rgba(0, 245, 212, 0.3)'
+              }}
+              suffix={
+                <span style={{ color: 'var(--text-secondary)' }}>USDT</span>
+              }
             />
           </Card>
         </Col>
         
         <Col span={6}>
-          <Card size="small">
+          <Card 
+            className={`neon-panel trading-card ${totalPnl !== 0 ? 'active' : ''}`}
+            size="small"
+            style={{
+              background: 'var(--bg-panel)',
+              border: `1px solid ${totalPnl >= 0 ? 'var(--profit-green)' : 'var(--loss-red)'}`,
+              transition: 'all var(--animation-normal) ease',
+              boxShadow: totalPnl !== 0 ? 
+                (totalPnl >= 0 ? 'var(--neon-shadow)' : '0 0 10px rgba(255, 77, 109, 0.2)') 
+                : 'none'
+            }}
+          >
             <Statistic
-              title="總盈虧"
+              title={
+                <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
+                  {totalPnl >= 0 ? <RiseOutlined style={{ marginRight: '8px' }} /> : <FallOutlined style={{ marginRight: '8px' }} />}
+                  總盈虧
+                </span>
+              }
               value={totalPnl}
               precision={2}
-              valueStyle={{ color: TradingSystemUtils.getPnlColor(totalPnl) }}
-              prefix={totalPnl >= 0 ? <RiseOutlined /> : <FallOutlined />}
-              suffix="USDT"
+              valueStyle={{ 
+                color: totalPnl >= 0 ? 'var(--profit-green)' : 'var(--loss-red)',
+                fontSize: '24px',
+                fontWeight: 'var(--font-weight-semibold)',
+                textShadow: totalPnl >= 0 ? 
+                  '0 0 8px rgba(41, 221, 196, 0.5)' : 
+                  '0 0 8px rgba(255, 77, 109, 0.5)'
+              }}
+              className={totalPnl !== 0 ? (totalPnl >= 0 ? 'flash-green' : 'flash-red') : ''}
+              suffix={
+                <span style={{ color: 'var(--text-secondary)' }}>USDT</span>
+              }
             />
           </Card>
         </Col>
         
         <Col span={6}>
-          <Card size="small">
+          <Card 
+            className="neon-panel trading-card"
+            size="small"
+            style={{
+              background: 'var(--bg-panel)',
+              border: `1px solid ${TradingSystemUtils.getRiskLevelColor(risk_metrics.overall_risk_level)}`,
+              transition: 'all var(--animation-normal) ease',
+              boxShadow: risk_metrics.overall_risk_level === 'high' ? 
+                '0 0 10px rgba(255, 77, 109, 0.3)' : 'none'
+            }}
+          >
             <Statistic
-              title="風險等級"
+              title={
+                <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
+                  <SafetyOutlined style={{ marginRight: '8px' }} />
+                  風險等級
+                </span>
+              }
               value={risk_metrics.overall_risk_level}
-              valueStyle={{ color: TradingSystemUtils.getRiskLevelColor(risk_metrics.overall_risk_level) }}
+              valueStyle={{ 
+                color: TradingSystemUtils.getRiskLevelColor(risk_metrics.overall_risk_level),
+                fontSize: '20px',
+                fontWeight: 'var(--font-weight-semibold)',
+                textTransform: 'uppercase'
+              }}
               prefix={TradingSystemUtils.getRiskLevelIcon(risk_metrics.overall_risk_level)}
             />
           </Card>
@@ -177,7 +258,7 @@ const TradingSystemDashboard: React.FC<TradingSystemDashboardProps> = ({
     )
   }
   
-  // 渲染控制面板
+  // 渲染控制面板 - 霓虹未來風格
   const renderControlPanel = () => {
     if (!systemStatus) return null
     
@@ -187,61 +268,162 @@ const TradingSystemDashboard: React.FC<TradingSystemDashboardProps> = ({
     const isStopped = trading_status.state === 'stopped'
     
     return (
-      <Card title="系統控制" size="small">
-        <Space>
+      <Card 
+        className="neon-panel"
+        title={
+          <span style={{ 
+            color: 'var(--text-primary)', 
+            fontSize: '16px',
+            fontWeight: 'var(--font-weight-semibold)'
+          }}>
+            <ThunderboltOutlined style={{ marginRight: '8px', color: 'var(--accent-color)' }} />
+            系統控制中心
+          </span>
+        }
+        size="small"
+        style={{
+          background: 'var(--bg-panel)',
+          border: '1px solid var(--border-color)'
+        }}
+      >
+        <Space size="large" wrap>
           <Button
+            className={`neon-button ${isRunning ? 'pulse' : ''}`}
             type="primary"
+            size="large"
             icon={<PlayCircleOutlined />}
             onClick={startTradingSystem}
             disabled={isRunning || loading}
             loading={loading}
+            style={{
+              background: isRunning ? 'var(--profit-green)' : 'var(--accent-color)',
+              borderColor: isRunning ? 'var(--profit-green)' : 'var(--accent-color)',
+              boxShadow: isRunning ? '0 0 15px rgba(41, 221, 196, 0.4)' : 'var(--neon-shadow)',
+              height: '42px',
+              padding: '0 20px',
+              fontWeight: 'var(--font-weight-medium)'
+            }}
           >
             啟動交易
           </Button>
           
           <Button
+            className="neon-button"
+            size="large"
             icon={<PauseCircleOutlined />}
             onClick={isPaused ? resumeTradingSystem : pauseTradingSystem}
             disabled={isStopped || loading}
             loading={loading}
+            style={{
+              borderColor: isPaused ? 'var(--accent-color)' : 'var(--text-secondary)',
+              color: isPaused ? 'var(--accent-color)' : 'var(--text-secondary)',
+              height: '42px',
+              padding: '0 20px',
+              fontWeight: 'var(--font-weight-medium)'
+            }}
           >
-            {isPaused ? '恢復' : '暫停'}
+            {isPaused ? '恢復交易' : '暫停交易'}
           </Button>
           
           <Button
+            className="neon-button"
+            size="large"
             icon={<StopOutlined />}
             onClick={stopTradingSystem}
             disabled={isStopped || loading}
             loading={loading}
+            style={{
+              borderColor: '#FFA726',
+              color: '#FFA726',
+              height: '42px',
+              padding: '0 20px',
+              fontWeight: 'var(--font-weight-medium)'
+            }}
           >
             停止交易
           </Button>
           
           <Button
+            className="neon-button"
             danger
+            size="large"
             icon={<ThunderboltOutlined />}
             onClick={emergencyStop}
             disabled={isStopped || loading}
             loading={loading}
+            style={{
+              background: 'transparent',
+              borderColor: 'var(--loss-red)',
+              color: 'var(--loss-red)',
+              height: '42px',
+              padding: '0 20px',
+              fontWeight: 'var(--font-weight-medium)',
+              boxShadow: '0 0 10px rgba(255, 77, 109, 0.2)'
+            }}
           >
             緊急停止
           </Button>
           
           <Button
+            className="neon-button"
+            size="large"
             icon={<ReloadOutlined />}
             onClick={refreshData}
             loading={loading}
+            style={{
+              borderColor: 'var(--border-color)',
+              color: 'var(--text-primary)',
+              height: '42px',
+              padding: '0 20px',
+              fontWeight: 'var(--font-weight-medium)'
+            }}
           >
             刷新數據
           </Button>
+        </Space>
+        
+        {/* 系統狀態指示器 */}
+        <div style={{ 
+          marginTop: '16px', 
+          padding: '12px 0',
+          borderTop: '1px solid var(--border-color)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <span style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>交易狀態:</span>
+            <Tag 
+              color={isRunning ? 'success' : isPaused ? 'warning' : 'default'}
+              style={{
+                fontSize: '12px',
+                fontWeight: 'var(--font-weight-medium)',
+                border: 'none',
+                background: isRunning ? 
+                  'rgba(41, 221, 196, 0.1)' : 
+                  isPaused ? 'rgba(255, 167, 38, 0.1)' : 
+                  'rgba(125, 125, 125, 0.1)'
+              }}
+            >
+              {isRunning ? '運行中' : isPaused ? '已暫停' : '已停止'}
+            </Tag>
+          </div>
           
-          <div style={{ marginLeft: 'auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <Badge
               status={isConnected ? 'success' : 'error'}
-              text={isConnected ? '已連接' : '連接斷開'}
+              text={
+                <span style={{ 
+                  color: isConnected ? 'var(--profit-green)' : 'var(--loss-red)',
+                  fontSize: '14px',
+                  fontWeight: 'var(--font-weight-medium)'
+                }}>
+                  {isConnected ? '系統連接正常' : '系統連接異常'}
+                </span>
+              }
             />
           </div>
-        </Space>
+        </div>
       </Card>
     )
   }
@@ -492,62 +674,126 @@ const TradingSystemDashboard: React.FC<TradingSystemDashboardProps> = ({
   }
   
   return (
-    <div style={{ padding: '24px' }}>
+    <div className="neon-dashboard fadeInUp" style={{ padding: '24px', minHeight: '100vh' }}>
       <Space direction="vertical" style={{ width: '100%' }} size="large">
-        {/* 頁面標題 */}
-        <div style={{ marginBottom: '20px' }}>
-          <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: 0 }}>
-            🚀 動態倉位策略交易系統
+        {/* 頁面標題 - 霓虹未來風格 */}
+        <div className="fadeInUp" style={{ marginBottom: '20px', animationDelay: '0.1s' }}>
+          <h1 style={{ 
+            fontSize: '32px', 
+            fontWeight: 'var(--font-weight-semibold)', 
+            margin: 0,
+            color: 'var(--text-primary)',
+            textShadow: '0 0 20px rgba(0, 245, 212, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <span style={{ fontSize: '36px' }}>🚀</span>
+            動態倉位策略交易系統
           </h1>
+          <div style={{ 
+            marginTop: '8px', 
+            color: 'var(--text-secondary)',
+            fontSize: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px'
+          }}>
+            <Badge
+              status={isConnected ? 'success' : 'error'}
+              text={isConnected ? '系統已連接' : '連接已斷開'}
+              style={{ fontSize: '14px' }}
+            />
+            {lastUpdate && (
+              <span style={{ fontSize: '14px' }}>
+                最後更新: {TradingSystemUtils.formatTime(lastUpdate)}
+              </span>
+            )}
+          </div>
         </div>
         
-        {/* 緊急警報 */}
+        {/* 緊急警報 - 增強視覺效果 */}
         {criticalAlerts.length > 0 && (
-          <Alert
-            message={`檢測到 ${criticalAlerts.length} 個緊急風險警報`}
-            description="系統存在高風險狀況，請立即檢查並採取措施"
-            type="error"
-            showIcon
-            closable
-          />
+          <div className="fadeInUp" style={{ animationDelay: '0.2s' }}>
+            <Alert
+              message={`⚠️ 檢測到 ${criticalAlerts.length} 個緊急風險警報`}
+              description="系統存在高風險狀況，請立即檢查並採取措施"
+              type="error"
+              showIcon
+              closable
+              style={{
+                background: 'rgba(255, 77, 109, 0.1)',
+                border: '1px solid var(--loss-red)',
+                borderRadius: 'var(--panel-radius)',
+                boxShadow: '0 0 20px rgba(255, 77, 109, 0.2)'
+              }}
+            />
+          </div>
         )}
         
-        {/* 系統狀態概覽 */}
-        {renderCoreMetrics()}
+        {/* 系統狀態概覽 - 霓虹面板 */}
+        <div className="fadeInUp" style={{ animationDelay: '0.3s' }}>
+          {renderCoreMetrics()}
+        </div>
         
-        {/* 控制面板 */}
-        {renderControlPanel()}
+        {/* 控制面板 - 霓虹按鈕 */}
+        <div className="fadeInUp" style={{ animationDelay: '0.4s' }}>
+          {renderControlPanel()}
+        </div>
         
         {/* 關鍵指標 */}
-        {renderKeyMetrics()}
+        <div className="fadeInUp" style={{ animationDelay: '0.5s' }}>
+          {renderKeyMetrics()}
+        </div>
         
         {/* 主要內容區域 */}
-        <Row gutter={[16, 16]}>
+        <Row gutter={[16, 16]} className="fadeInUp" style={{ animationDelay: '0.6s' }}>
           <Col span={18}>
             {/* 性能圖表 */}
-            {renderPerformanceChart()}
+            <div className="neon-panel">
+              {renderPerformanceChart()}
+            </div>
           </Col>
           <Col span={6}>
             {/* 風險儀表板 */}
-            {renderRiskGauge()}
+            <div className="neon-panel">
+              {renderRiskGauge()}
+            </div>
           </Col>
         </Row>
         
         {/* 詳細數據 */}
-        <Row gutter={[16, 16]}>
+        <Row gutter={[16, 16]} className="fadeInUp" style={{ animationDelay: '0.7s' }}>
           <Col span={8}>
-            {renderRecentOrders()}
+            <div className="neon-panel">
+              {renderRecentOrders()}
+            </div>
           </Col>
           <Col span={8}>
-            {renderRiskAlerts()}
+            <div className="neon-panel">
+              {renderRiskAlerts()}
+            </div>
           </Col>
           <Col span={8}>
-            {renderStrategyConfig()}
+            <div className="neon-panel">
+              {renderStrategyConfig()}
+            </div>
           </Col>
         </Row>
         
-
       </Space>
+      
+      {/* 背景裝飾效果 */}
+      <div className="neon-background-effect" style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        pointerEvents: 'none',
+        zIndex: -1,
+        background: 'radial-gradient(circle at 20% 80%, rgba(0, 245, 212, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 77, 109, 0.02) 0%, transparent 50%)'
+      }} />
     </div>
   )
 }

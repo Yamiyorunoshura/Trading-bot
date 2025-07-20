@@ -26,6 +26,7 @@ import TradingSystemDashboard from './components/TradingSystemDashboard'
 import TestPage from './components/TestPage'
 import SystemPerformanceTest from './components/SystemPerformanceTest'
 import { useAppStore } from './stores/appStore'
+import { initializeAnimationSystem } from './utils/animations'
 import './App.css'
 
 const { Header, Sider, Content } = Layout
@@ -92,6 +93,16 @@ const AppContent: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { systemStatus, isWebSocketConnected } = useAppStore()
+  
+  // 初始化動畫系統
+  React.useEffect(() => {
+    initializeAnimationSystem()
+    
+    // 清理函數
+    return () => {
+      // 可以在這裡清理動畫相關資源
+    }
+  }, [])
 
   const handleMenuClick = ({ key }: { key: string }) => {
     navigate(key)

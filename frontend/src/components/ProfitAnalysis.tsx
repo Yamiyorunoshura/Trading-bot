@@ -6,7 +6,8 @@ import {
   DollarOutlined,
   RiseOutlined,
   ReloadOutlined,
-  DownloadOutlined
+  DownloadOutlined,
+  BarChartOutlined
 } from '@ant-design/icons'
 import { 
   LineChart, 
@@ -165,39 +166,116 @@ const ProfitAnalysis: React.FC = () => {
   ]
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div className="neon-dashboard fadeInUp" style={{ padding: '24px', minHeight: '100vh' }}>
+      <Space direction="vertical" style={{ width: '100%' }} size="large">
+        {/* 霓虹未來風格頁面標題 */}
+        <div className="fadeInUp" style={{ marginBottom: '20px', animationDelay: '0.1s' }}>
+          <h1 style={{ 
+            fontSize: '32px', 
+            fontWeight: 'var(--font-weight-semibold)', 
+            margin: 0,
+            color: 'var(--text-primary)',
+            textShadow: '0 0 20px rgba(0, 245, 212, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <BarChartOutlined style={{ fontSize: '36px', color: 'var(--accent-color)' }} />
+            績效分析系統
+          </h1>
+          <div style={{ 
+            marginTop: '8px', 
+            color: 'var(--text-secondary)',
+            fontSize: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className={`neon-status-indicator ${isWebSocketConnected ? 'online pulse' : 'warning'}`}></span>
+                <span style={{ 
+                  color: isWebSocketConnected ? 'var(--profit-green)' : '#FFA726',
+                  fontWeight: 'var(--font-weight-medium)'
+                }}>
+                  {isWebSocketConnected ? '實時數據同步' : '數據連接中'}
+                </span>
+              </div>
+              {realtimeData.lastUpdate > 0 && (
+                <>
+                  <div>|</div>
+                  <div>
+                    最後更新: <span style={{ color: 'var(--text-secondary)' }}>
+                      {new Date(realtimeData.lastUpdate).toLocaleTimeString()}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+            <Space>
+              <Select 
+                value={timeRange} 
+                onChange={setTimeRange} 
+                style={{ width: 120 }}
+              >
+                <Option value="7d">最近7天</Option>
+                <Option value="30d">最近30天</Option>
+                <Option value="90d">最近90天</Option>
+              </Select>
+              <Button 
+                className="neon-button" 
+                onClick={handleRefresh} 
+                icon={<ReloadOutlined />}
+                style={{
+                  borderColor: 'var(--accent-color)',
+                  color: 'var(--accent-color)',
+                  height: '36px',
+                  padding: '0 16px',
+                  fontWeight: 'var(--font-weight-medium)'
+                }}
+              >
+                刷新數據
+              </Button>
+              <Button 
+                className="neon-button" 
+                onClick={handleExport} 
+                icon={<DownloadOutlined />}
+                style={{
+                  borderColor: 'var(--border-color)',
+                  color: 'var(--text-primary)',
+                  height: '36px',
+                  padding: '0 16px',
+                  fontWeight: 'var(--font-weight-medium)'
+                }}
+              >
+                導出報告
+              </Button>
+            </Space>
+          </div>
+        </div>
+
       <Row gutter={[16, 16]}>
         <Col span={24}>
-                      <Card 
-              title="利潤分析" 
-              extra={
-                <Space>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ 
-                      color: isWebSocketConnected ? '#52c41a' : '#faad14',
-                      fontSize: '12px'
-                    }}>
-                      ● {isWebSocketConnected ? '實時數據' : '連接中'}
-                    </span>
-                    {realtimeData.lastUpdate > 0 && (
-                      <span style={{ color: '#888', fontSize: '12px' }}>
-                        更新: {new Date(realtimeData.lastUpdate).toLocaleTimeString()}
-                      </span>
-                    )}
-                  </div>
-                  <Select value={timeRange} onChange={setTimeRange} style={{ width: 120 }}>
-                    <Option value="7d">最近7天</Option>
-                    <Option value="30d">最近30天</Option>
-                    <Option value="90d">最近90天</Option>
-                  </Select>
-                  <Button onClick={handleRefresh} icon={<ReloadOutlined />}>
-                    刷新
-                  </Button>
-                  <Button onClick={handleExport} icon={<DownloadOutlined />}>
-                    導出
-                  </Button>
-                </Space>
-              }
+          <Card 
+            className="neon-panel fadeInUp"
+            title={
+              <span style={{ 
+                color: 'var(--text-primary)', 
+                fontSize: '18px',
+                fontWeight: 'var(--font-weight-semibold)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <DollarOutlined style={{ color: 'var(--accent-color)' }} />
+                績效概覽
+              </span>
+            }
+            style={{ 
+              animationDelay: '0.2s',
+              background: 'var(--bg-panel)',
+              border: '1px solid var(--border-color)'
+            }}
             >
             <Row gutter={[16, 16]}>
               <Col span={6}>
@@ -391,6 +469,20 @@ const ProfitAnalysis: React.FC = () => {
           </Card>
         </Col>
       </Row>
+      
+      </Space>
+      
+      {/* 背景裝飾效果 */}
+      <div className="neon-background-effect" style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        pointerEvents: 'none',
+        zIndex: -1,
+        background: 'radial-gradient(circle at 20% 80%, rgba(0, 245, 212, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 77, 109, 0.02) 0%, transparent 50%)'
+      }} />
     </div>
   )
 }

@@ -618,47 +618,122 @@ const UnifiedRiskManagement: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div className="neon-dashboard fadeInUp" style={{ padding: '24px', minHeight: '100vh' }}>
       <style>{`
         .risk-critical {
-          background-color: #fff2f0;
-          border-left: 4px solid #f5222d;
+          background-color: rgba(255, 77, 109, 0.1);
+          border-left: 4px solid var(--loss-red);
+          box-shadow: 0 0 10px rgba(255, 77, 109, 0.3);
         }
         .risk-high {
-          background-color: #fff7e6;
-          border-left: 4px solid #fa8c16;
+          background-color: rgba(255, 167, 38, 0.1);
+          border-left: 4px solid #FFA726;
+          box-shadow: 0 0 10px rgba(255, 167, 38, 0.3);
+        }
+        .risk-medium {
+          background-color: rgba(0, 245, 212, 0.05);
+          border-left: 4px solid var(--accent-color);
+        }
+        .risk-low {
+          background-color: rgba(41, 221, 196, 0.1);
+          border-left: 4px solid var(--profit-green);
+          box-shadow: 0 0 10px rgba(41, 221, 196, 0.2);
         }
       `}</style>
       
       <Space direction="vertical" style={{ width: '100%' }} size="large">
-        {/* 頁面標題 */}
-        <div>
-          <h2>
-            <ThunderboltOutlined style={{ marginRight: '8px' }} />
+        {/* 霓虹未來風格頁面標題 */}
+        <div className="fadeInUp" style={{ marginBottom: '20px', animationDelay: '0.1s' }}>
+          <h1 style={{ 
+            fontSize: '32px', 
+            fontWeight: 'var(--font-weight-semibold)', 
+            margin: 0,
+            color: 'var(--text-primary)',
+            textShadow: '0 0 20px rgba(0, 245, 212, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <SafetyOutlined style={{ fontSize: '36px', color: 'var(--accent-color)' }} />
             統一風險管理系統
-          </h2>
-          <p>實時監控和管理交易風險，確保資金安全</p>
+          </h1>
+          <div style={{ 
+            marginTop: '8px', 
+            color: 'var(--text-secondary)',
+            fontSize: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px'
+          }}>
+            <div>實時監控和管理交易風險，確保資金安全</div>
+            <div>|</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span>當前風險等級:</span>
+              <Tag 
+                color={riskMetrics.overall_risk_level === 'low' ? 'success' : 
+                       riskMetrics.overall_risk_level === 'medium' ? 'warning' : 'error'}
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 'var(--font-weight-medium)',
+                  border: 'none',
+                  background: riskMetrics.overall_risk_level === 'low' ? 
+                    'rgba(41, 221, 196, 0.2)' : 
+                    riskMetrics.overall_risk_level === 'medium' ? 
+                    'rgba(255, 167, 38, 0.2)' : 
+                    'rgba(255, 77, 109, 0.2)',
+                  color: riskMetrics.overall_risk_level === 'low' ? 
+                    'var(--profit-green)' : 
+                    riskMetrics.overall_risk_level === 'medium' ? 
+                    '#FFA726' : 
+                    'var(--loss-red)',
+                  textTransform: 'uppercase'
+                }}
+              >
+                {riskMetrics.overall_risk_level}
+              </Tag>
+            </div>
+          </div>
         </div>
         
-        {/* 控制面板 */}
-        {renderControlPanel()}
+        {/* 控制面板 - 霓虹面板 */}
+        <div className="fadeInUp" style={{ animationDelay: '0.2s' }}>
+          {renderControlPanel()}
+        </div>
         
-        {/* 風險等級和關鍵指標 */}
-        <Row gutter={16}>
+        {/* 風險等級和關鍵指標 - 霓虹面板 */}
+        <Row gutter={16} className="fadeInUp" style={{ animationDelay: '0.3s' }}>
           <Col span={8}>
-            {renderRiskLevelCard()}
+            <div className="neon-panel">
+              {renderRiskLevelCard()}
+            </div>
           </Col>
           <Col span={16}>
-            {renderKeyMetrics()}
+            <div className="neon-panel">
+              {renderKeyMetrics()}
+            </div>
           </Col>
         </Row>
         
-        {/* 風險警報表格 */}
-        {renderAlertsTable()}
+        {/* 風險警報表格 - 霓虹面板 */}
+        <div className="neon-panel fadeInUp" style={{ animationDelay: '0.4s' }}>
+          {renderAlertsTable()}
+        </div>
         
         {/* 風險配置模態框 */}
         {renderConfigModal()}
       </Space>
+      
+      {/* 背景裝飾效果 */}
+      <div className="neon-background-effect" style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        pointerEvents: 'none',
+        zIndex: -1,
+        background: 'radial-gradient(circle at 20% 80%, rgba(0, 245, 212, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 77, 109, 0.02) 0%, transparent 50%)'
+      }} />
     </div>
   )
 }

@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第四階段：跨瀏覽器兼容性測試 - v1.02</title>
+    <style>
+        /* 霓虹未來設計系統 - 兼容性測試版本 */
+        :root {
+            --bg-main: #0D0F1A;
+            --bg-panel: #161A25;
+            --border-color: #2D3748;
+            --text-primary: #E0E2F0;
+            --text-secondary: #7A81A3;
+            --accent-color: #00F5D4;
+            --profit-green: #29DDC4;
+            --loss-red: #FF4D6D;
+            --neon-glow: 0 0 20px rgba(0, 245, 212, 0.3);
+            --neon-shadow: 0 0 10px rgba(0, 245, 212, 0.2);
+            --animation-fast: 0.2s;
+            --animation-normal: 0.3s;
+            --animation-slow: 0.5s;
+            --panel-radius: 8px;
+            --panel-padding: 20px;
+            --panel-margin: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* 兼容性測試面板 */
+        .browser-info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--panel-radius);
+            padding: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            z-index: 1000;
+            max-width: 250px;
+        }
+
+        .test-status {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--panel-radius);
+            padding: 12px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 4px 0;
+        }
+
+        .status-pass { color: var(--profit-green); }
+        .status-fail { color: var(--loss-red); }
+        .status-partial { color: #FFA726; }
+
+        /* 霓虹面板 - 兼容性測試版 */
+        .neon-panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--panel-radius);
+            padding: var(--panel-padding);
+            margin: var(--panel-margin);
+            position: relative;
+            overflow: hidden;
+            
+            /* 漸進增強 - 基礎瀏覽器支持 */
+            transition: all var(--animation-normal) ease;
+            
+            /* 高級瀏覽器支持 */
+            transition: all var(--animation-normal) cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            will-change: transform, box-shadow, border-color;
+        }
+
+        /* 光掃動畫 - 降級處理 */
+        .neon-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 212, 0.1), transparent);
+            transition: left var(--animation-slow) ease;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .neon-panel:hover {
+            border-color: var(--accent-color);
+            box-shadow: var(--neon-glow);
+            transform: translateY(-2px) scale(1.002);
+        }
+
+        .neon-panel:hover::before {
+            left: 100%;
+        }
+
+        /* CSS變數不支持時的降級 */
+        @supports not (color: var(--accent-color)) {
+            .neon-panel {
+                background: #161A25;
+                border-color: #2D3748;
+                color: #E0E2F0;
+            }
+            .neon-panel:hover {
+                border-color: #00F5D4;
+                box-shadow: 0 0 20px rgba(0, 245, 212, 0.3);
+            }
+        }
+
+        /* backdrop-filter不支持時的降級 */
+        @supports not (backdrop-filter: blur(10px)) {
+            .neon-panel {
+                background: rgba(22, 26, 37, 0.95);
+            }
+        }
+
+        /* 霓虹按鈕 - 兼容性版本 */
+        .neon-button {
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+            margin: 8px;
+            
+            /* 基礎過渡 */
+            transition: all var(--animation-normal) ease;
+            
+            /* 高級瀏覽器 */
+            transition: all var(--animation-normal) cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, background-color, box-shadow;
+        }
+
+        .neon-button:hover {
+            background: var(--accent-color);
+            color: var(--bg-main);
+            box-shadow: var(--neon-glow);
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .neon-button:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        /* 舊版瀏覽器降級 */
+        @supports not (transform: translateY(-2px)) {
+            .neon-button:hover {
+                background: var(--accent-color);
+                color: var(--bg-main);
+            }
+        }
+
+        /* 動畫兼容性測試 */
+        .animation-test {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            margin: 20px;
+        }
+
+        .test-fadeInUp {
+            animation: fadeInUp var(--animation-slow) ease-out;
+        }
+
+        .test-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .test-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.7;
+                transform: scale(1.02);
+            }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Flexbox和Grid測試 */
+        .layout-test {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .grid-test {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        /* CSS自定義屬性測試 */
+        .custom-props-test {
+            color: var(--accent-color, #00F5D4);
+            border: 1px solid var(--border-color, #2D3748);
+        }
+
+        /* 現代CSS特性測試 */
+        .modern-css-test {
+            /* CSS Grid */
+            display: grid;
+            place-items: center;
+            
+            /* CSS Logical Properties */
+            margin-inline: auto;
+            padding-block: 20px;
+            
+            /* CSS Clamp */
+            width: clamp(300px, 50vw, 600px);
+            
+            /* CSS Math Functions */
+            height: calc(100px + 2rem);
+        }
+
+        /* 響應式測試 */
+        @media (max-width: 768px) {
+            .neon-panel {
+                padding: 12px;
+                margin: 8px;
+            }
+            
+            .neon-button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            
+            .neon-panel:hover {
+                transform: none;
+            }
+        }
+
+        /* 工具類 */
+        .title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            text-shadow: 0 0 20px rgba(0, 245, 212, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin: 30px 0 15px 0;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .feature-support {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .support-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .support-full { background: var(--profit-green); }
+        .support-partial { background: #FFA726; }
+        .support-none { background: var(--loss-red); }
+
+        /* 錯誤處理 */
+        .error-boundary {
+            border: 2px dashed var(--loss-red);
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            color: var(--loss-red);
+        }
+    </style>
+</head>
+<body>
+    <!-- 瀏覽器信息面板 -->
+    <div class="browser-info">
+        <div><strong>瀏覽器檢測</strong></div>
+        <div>名稱: <span id="browser-name">檢測中...</span></div>
+        <div>版本: <span id="browser-version">檢測中...</span></div>
+        <div>引擎: <span id="browser-engine">檢測中...</span></div>
+        <div>平台: <span id="browser-platform">檢測中...</span></div>
+        <div>User Agent: <span id="user-agent" style="word-break: break-all; font-size: 10px;"></span></div>
+    </div>
+
+    <!-- 測試狀態面板 -->
+    <div class="test-status">
+        <div><strong>兼容性測試狀態</strong></div>
+        <div class="status-item">
+            <span>CSS變數:</span>
+            <span id="css-vars-status">測試中</span>
+        </div>
+        <div class="status-item">
+            <span>Flexbox:</span>
+            <span id="flexbox-status">測試中</span>
+        </div>
+        <div class="status-item">
+            <span>CSS Grid:</span>
+            <span id="grid-status">測試中</span>
+        </div>
+        <div class="status-item">
+            <span>動畫:</span>
+            <span id="animation-status">測試中</span>
+        </div>
+        <div class="status-item">
+            <span>Transform:</span>
+            <span id="transform-status">測試中</span>
+        </div>
+        <div class="status-item">
+            <span>Backdrop Filter:</span>
+            <span id="backdrop-filter-status">測試中</span>
+        </div>
+        <div class="status-item">
+            <span>總評:</span>
+            <span id="overall-status">評估中</span>
+        </div>
+    </div>
+
+    <div style="margin-top: 120px;">
+        <h1 class="title">
+            <span style="font-size: 36px;">🌐</span>
+            跨瀏覽器兼容性測試
+        </h1>
+        <p style="color: var(--text-secondary); font-size: 16px; margin-bottom: 30px;">
+            v1.02第四階段 - Chrome、Firefox、Safari、Edge 全面兼容性驗證
+        </p>
+    </div>
+
+    <!-- CSS特性支持測試 -->
+    <div class="section-title">🎯 CSS特性支持測試</div>
+    
+    <div class="neon-panel">
+        <h3 style="color: var(--text-primary); margin-top: 0;">現代CSS特性檢測</h3>
+        <div id="feature-support-list">
+            <!-- 動態生成特性支持列表 -->
+        </div>
+    </div>
+
+    <!-- 霓虹組件兼容性測試 -->
+    <div class="section-title">⚡ 霓虹組件兼容性測試</div>
+    
+    <div class="test-grid">
+        <div class="neon-panel">
+            <h4 style="color: var(--accent-color); margin-top: 0;">霓虹面板效果</h4>
+            <p style="color: var(--text-secondary);">
+                懸停查看光掃動畫和發光效果
+            </p>
+            <div style="margin-top: 12px;">
+                <small style="color: var(--text-secondary);">
+                    ✅ 基礎樣式 | ⚡ 光效動畫 | 🎭 變換效果
+                </small>
+            </div>
+        </div>
+
+        <div class="neon-panel">
+            <h4 style="color: var(--accent-color); margin-top: 0;">響應式適配</h4>
+            <p style="color: var(--text-secondary);">
+                調整窗口大小測試響應式行為
+            </p>
+            <div class="layout-test">
+                <div style="flex: 1; min-width: 100px; height: 40px; background: rgba(0, 245, 212, 0.2); border-radius: 4px;"></div>
+                <div style="flex: 1; min-width: 100px; height: 40px; background: rgba(255, 77, 109, 0.2); border-radius: 4px;"></div>
+            </div>
+        </div>
+
+        <div class="neon-panel">
+            <h4 style="color: var(--accent-color); margin-top: 0;">動畫兼容性</h4>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div class="animation-test test-fadeInUp"></div>
+                <div class="animation-test test-pulse"></div>
+                <div class="animation-test test-spin"></div>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 14px;">
+                淡入上升 | 脈衝動畫 | 旋轉動畫
+            </p>
+        </div>
+    </div>
+
+    <!-- 按鈕兼容性測試 -->
+    <div class="section-title">🎮 按鈕交互測試</div>
+    
+    <div class="neon-panel">
+        <h3 style="color: var(--text-primary); margin-top: 0; margin-bottom: 20px;">霓虹按鈕狀態測試</h3>
+        <div>
+            <button class="neon-button" onclick="testButtonFeedback(this)">標準按鈕</button>
+            <button class="neon-button" style="border-color: var(--profit-green); color: var(--profit-green);">成功按鈕</button>
+            <button class="neon-button" style="border-color: var(--loss-red); color: var(--loss-red);">警告按鈕</button>
+            <button class="neon-button" disabled style="opacity: 0.5; cursor: not-allowed;">禁用按鈕</button>
+        </div>
+    </div>
+
+    <!-- 佈局兼容性測試 -->
+    <div class="section-title">📐 佈局系統測試</div>
+    
+    <div class="neon-panel">
+        <h3 style="color: var(--text-primary); margin-top: 0;">CSS Grid 佈局測試</h3>
+        <div class="grid-test">
+            <div style="background: rgba(0, 245, 212, 0.1); padding: 20px; border-radius: 8px; text-align: center;">
+                網格項目 1
+            </div>
+            <div style="background: rgba(255, 77, 109, 0.1); padding: 20px; border-radius: 8px; text-align: center;">
+                網格項目 2
+            </div>
+            <div style="background: rgba(255, 167, 38, 0.1); padding: 20px; border-radius: 8px; text-align: center;">
+                網格項目 3
+            </div>
+        </div>
+    </div>
+
+    <!-- 性能測試 -->
+    <div class="section-title">⚡ 性能基準測試</div>
+    
+    <div class="neon-panel">
+        <h3 style="color: var(--text-primary); margin-top: 0;">渲染性能測試</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+            <div>
+                <h5 style="color: var(--accent-color);">FPS監控</h5>
+                <div style="font-size: 24px; color: var(--profit-green);">
+                    <span id="fps-counter">60</span> fps
+                </div>
+            </div>
+            <div>
+                <h5 style="color: var(--accent-color);">渲染時間</h5>
+                <div style="font-size: 24px; color: var(--profit-green);">
+                    <span id="render-time">--</span> ms
+                </div>
+            </div>
+            <div>
+                <h5 style="color: var(--accent-color);">內存使用</h5>
+                <div style="font-size: 24px; color: var(--text-primary);">
+                    <span id="memory-usage">--</span> MB
+                </div>
+            </div>
+        </div>
+        <button class="neon-button" onclick="runPerformanceTest()" style="margin-top: 16px;">
+            開始性能測試
+        </button>
+    </div>
+
+    <!-- 錯誤處理測試 */
+    <div class="section-title">🚨 錯誤處理測試</div>
+    
+    <div class="neon-panel">
+        <h3 style="color: var(--text-primary); margin-top: 0;">降級方案驗證</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 16px;">
+            測試在不同瀏覽器環境下的降級方案
+        </p>
+        
+        <!-- 故意使用不支持的CSS測試降級 -->
+        <div class="modern-css-test custom-props-test" style="border: 1px solid; padding: 16px; margin: 16px 0;">
+            <p>現代CSS特性測試區域</p>
+            <small style="color: var(--text-secondary);">
+                如果看起來正常，說明瀏覽器支持現代CSS特性
+            </small>
+        </div>
+    </div>
+
+    <!-- 兼容性總結 -->
+    <div class="section-title">📊 兼容性測試總結</div>
+    
+    <div class="neon-panel" style="border-color: var(--accent-color); box-shadow: var(--neon-shadow);">
+        <h3 style="color: var(--accent-color); margin-top: 0;">測試結果匯總</h3>
+        <div id="compatibility-summary">
+            <div style="text-align: center; color: var(--text-secondary);">
+                測試進行中...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 瀏覽器檢測
+        function detectBrowser() {
+            const ua = navigator.userAgent;
+            document.getElementById('user-agent').textContent = ua;
+            document.getElementById('browser-platform').textContent = navigator.platform;
+
+            let browserName = 'Unknown';
+            let browserVersion = 'Unknown';
+            let browserEngine = 'Unknown';
+
+            // Chrome
+            if (ua.includes('Chrome') && !ua.includes('Edg')) {
+                browserName = 'Chrome';
+                browserVersion = ua.match(/Chrome\/(\d+)/)?.[1] || 'Unknown';
+                browserEngine = 'Blink';
+            }
+            // Firefox
+            else if (ua.includes('Firefox')) {
+                browserName = 'Firefox';
+                browserVersion = ua.match(/Firefox\/(\d+)/)?.[1] || 'Unknown';
+                browserEngine = 'Gecko';
+            }
+            // Safari
+            else if (ua.includes('Safari') && !ua.includes('Chrome')) {
+                browserName = 'Safari';
+                browserVersion = ua.match(/Version\/(\d+)/)?.[1] || 'Unknown';
+                browserEngine = 'WebKit';
+            }
+            // Edge
+            else if (ua.includes('Edg')) {
+                browserName = 'Edge';
+                browserVersion = ua.match(/Edg\/(\d+)/)?.[1] || 'Unknown';
+                browserEngine = 'Blink';
+            }
+
+            document.getElementById('browser-name').textContent = browserName;
+            document.getElementById('browser-version').textContent = browserVersion;
+            document.getElementById('browser-engine').textContent = browserEngine;
+
+            return { name: browserName, version: parseInt(browserVersion), engine: browserEngine };
+        }
+
+        // CSS特性支持檢測
+        function detectCSSFeatures() {
+            const features = {
+                'CSS變數 (Custom Properties)': CSS.supports('color', 'var(--test)'),
+                'Flexbox': CSS.supports('display', 'flex'),
+                'CSS Grid': CSS.supports('display', 'grid'),
+                'Transform': CSS.supports('transform', 'translateY(10px)'),
+                'Backdrop Filter': CSS.supports('backdrop-filter', 'blur(10px)'),
+                'CSS動畫': CSS.supports('animation', 'fadeIn 1s'),
+                'Border Radius': CSS.supports('border-radius', '8px'),
+                'Box Shadow': CSS.supports('box-shadow', '0 0 10px #000'),
+                'CSS Transitions': CSS.supports('transition', 'all 0.3s'),
+                'CSS Calc()': CSS.supports('width', 'calc(100% - 20px)')
+            };
+
+            // 更新狀態面板
+            document.getElementById('css-vars-status').textContent = features['CSS變數 (Custom Properties)'] ? '✅ 支持' : '❌ 不支持';
+            document.getElementById('css-vars-status').className = features['CSS變數 (Custom Properties)'] ? 'status-pass' : 'status-fail';
+
+            document.getElementById('flexbox-status').textContent = features['Flexbox'] ? '✅ 支持' : '❌ 不支持';
+            document.getElementById('flexbox-status').className = features['Flexbox'] ? 'status-pass' : 'status-fail';
+
+            document.getElementById('grid-status').textContent = features['CSS Grid'] ? '✅ 支持' : '❌ 不支持';
+            document.getElementById('grid-status').className = features['CSS Grid'] ? 'status-pass' : 'status-fail';
+
+            document.getElementById('animation-status').textContent = features['CSS動畫'] ? '✅ 支持' : '❌ 不支持';
+            document.getElementById('animation-status').className = features['CSS動畫'] ? 'status-pass' : 'status-fail';
+
+            document.getElementById('transform-status').textContent = features['Transform'] ? '✅ 支持' : '❌ 不支持';
+            document.getElementById('transform-status').className = features['Transform'] ? 'status-pass' : 'status-fail';
+
+            document.getElementById('backdrop-filter-status').textContent = features['Backdrop Filter'] ? '✅ 支持' : '⚠️ 部分支持';
+            document.getElementById('backdrop-filter-status').className = features['Backdrop Filter'] ? 'status-pass' : 'status-partial';
+
+            // 生成特性支持列表
+            const featureList = document.getElementById('feature-support-list');
+            featureList.innerHTML = '';
+
+            Object.entries(features).forEach(([feature, supported]) => {
+                const item = document.createElement('div');
+                item.className = 'feature-support';
+                item.innerHTML = `
+                    <span>${feature}</span>
+                    <span class="support-indicator ${supported ? 'support-full' : 'support-none'}"></span>
+                `;
+                featureList.appendChild(item);
+            });
+
+            // 計算總評
+            const supportedCount = Object.values(features).filter(Boolean).length;
+            const totalCount = Object.keys(features).length;
+            const supportPercentage = (supportedCount / totalCount) * 100;
+
+            let overallStatus, overallClass;
+            if (supportPercentage >= 90) {
+                overallStatus = '✅ 優秀';
+                overallClass = 'status-pass';
+            } else if (supportPercentage >= 70) {
+                overallStatus = '⚠️ 良好';
+                overallClass = 'status-partial';
+            } else {
+                overallStatus = '❌ 需要改進';
+                overallClass = 'status-fail';
+            }
+
+            document.getElementById('overall-status').textContent = overallStatus;
+            document.getElementById('overall-status').className = overallClass;
+
+            return features;
+        }
+
+        // FPS監控
+        let frameCount = 0;
+        let lastTime = performance.now();
+        let fps = 60;
+
+        function updateFPS() {
+            const currentTime = performance.now();
+            frameCount++;
+            
+            if (currentTime >= lastTime + 1000) {
+                fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                document.getElementById('fps-counter').textContent = fps;
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+            
+            requestAnimationFrame(updateFPS);
+        }
+
+        // 性能測試
+        function runPerformanceTest() {
+            const startTime = performance.now();
+            
+            // 創建大量DOM元素測試渲染性能
+            const testContainer = document.createElement('div');
+            testContainer.style.position = 'absolute';
+            testContainer.style.top = '-9999px';
+            document.body.appendChild(testContainer);
+
+            for (let i = 0; i < 1000; i++) {
+                const element = document.createElement('div');
+                element.className = 'neon-panel';
+                element.textContent = `Test Element ${i}`;
+                testContainer.appendChild(element);
+            }
+
+            const endTime = performance.now();
+            const renderTime = (endTime - startTime).toFixed(2);
+            document.getElementById('render-time').textContent = renderTime;
+
+            // 清理測試元素
+            document.body.removeChild(testContainer);
+
+            // 內存使用檢測 (如果支持)
+            if (performance.memory) {
+                const memoryUsage = (performance.memory.usedJSHeapSize / 1024 / 1024).toFixed(2);
+                document.getElementById('memory-usage').textContent = memoryUsage;
+            } else {
+                document.getElementById('memory-usage').textContent = 'N/A';
+            }
+        }
+
+        // 按鈕反饋測試
+        function testButtonFeedback(button) {
+            button.style.transform = 'translateY(-1px) scale(0.98)';
+            setTimeout(() => {
+                button.style.transform = '';
+            }, 150);
+        }
+
+        // 生成兼容性總結
+        function generateCompatibilitySummary(browser, features) {
+            const supportedCount = Object.values(features).filter(Boolean).length;
+            const totalCount = Object.keys(features).length;
+            const supportPercentage = Math.round((supportedCount / totalCount) * 100);
+
+            const summary = document.getElementById('compatibility-summary');
+            
+            let recommendation = '';
+            let recommendationClass = '';
+
+            if (supportPercentage >= 90) {
+                recommendation = '✅ 完全兼容 - 推薦使用';
+                recommendationClass = 'status-pass';
+            } else if (supportPercentage >= 70) {
+                recommendation = '⚠️ 基本兼容 - 部分功能降級';
+                recommendationClass = 'status-partial';
+            } else {
+                recommendation = '❌ 兼容性差 - 需要polyfill';
+                recommendationClass = 'status-fail';
+            }
+
+            summary.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                    <div>
+                        <h5 style="color: var(--accent-color);">瀏覽器</h5>
+                        <div>${browser.name} ${browser.version}</div>
+                    </div>
+                    <div>
+                        <h5 style="color: var(--accent-color);">引擎</h5>
+                        <div>${browser.engine}</div>
+                    </div>
+                    <div>
+                        <h5 style="color: var(--accent-color);">支持度</h5>
+                        <div>${supportPercentage}%</div>
+                    </div>
+                    <div>
+                        <h5 style="color: var(--accent-color);">評級</h5>
+                        <div class="${recommendationClass}">${recommendation}</div>
+                    </div>
+                </div>
+                <div style="background: rgba(0, 245, 212, 0.05); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent-color);">
+                    <strong>建議：</strong>
+                    ${supportPercentage >= 90 ? 
+                        '當前瀏覽器完全支持霓虹未來設計系統，所有特性均可正常使用。' :
+                        supportPercentage >= 70 ?
+                        '當前瀏覽器基本支持設計系統，部分高級特性可能降級顯示。' :
+                        '當前瀏覽器兼容性較差，建議升級瀏覽器或使用polyfill。'
+                    }
+                </div>
+            `;
+        }
+
+        // 初始化測試
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 開始跨瀏覽器兼容性測試');
+            
+            // 檢測瀏覽器
+            const browser = detectBrowser();
+            console.log('瀏覽器信息:', browser);
+            
+            // 檢測CSS特性
+            const features = detectCSSFeatures();
+            console.log('CSS特性支持:', features);
+            
+            // 生成總結
+            setTimeout(() => {
+                generateCompatibilitySummary(browser, features);
+            }, 1000);
+            
+            // 開始FPS監控
+            updateFPS();
+            
+            // 自動運行性能測試
+            setTimeout(runPerformanceTest, 2000);
+            
+            console.log('✅ 兼容性測試完成');
+        });
+
+        // 錯誤處理
+        window.addEventListener('error', function(event) {
+            console.error('JavaScript錯誤:', event.error);
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-boundary';
+            errorDiv.innerHTML = `
+                <h4>⚠️ 檢測到JavaScript錯誤</h4>
+                <p>錯誤信息: ${event.message}</p>
+                <p>文件: ${event.filename}</p>
+                <p>行號: ${event.lineno}</p>
+            `;
+            
+            document.body.appendChild(errorDiv);
+        });
+
+        // CSS載入錯誤處理
+        window.addEventListener('load', function() {
+            // 檢查關鍵樣式是否正確載入
+            const testElement = document.createElement('div');
+            testElement.style.cssText = 'color: var(--accent-color); display: none;';
+            document.body.appendChild(testElement);
+            
+            const computedColor = window.getComputedStyle(testElement).color;
+            if (computedColor === 'var(--accent-color)' || computedColor === '') {
+                console.warn('⚠️ CSS變數可能未正確載入');
+            }
+            
+            document.body.removeChild(testElement);
+        });
+    </script>
+</body>
+</html> 

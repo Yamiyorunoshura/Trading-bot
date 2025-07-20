@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第三階段：動畫優化與微交互體驗完善 - v1.02測試</title>
+    <style>
+        /* 霓虹未來色彩系統 */
+        :root {
+            /* 主色彩系統 */
+            --bg-main: #0D0F1A;
+            --bg-panel: #161A25;
+            --border-color: #2D3748;
+            --text-primary: #E0E2F0;
+            --text-secondary: #7A81A3;
+            --accent-color: #00F5D4;
+            --profit-green: #29DDC4;
+            --loss-red: #FF4D6D;
+            
+            /* 霓虹效果 */
+            --neon-glow: 0 0 20px rgba(0, 245, 212, 0.3);
+            --neon-shadow: 0 0 10px rgba(0, 245, 212, 0.2);
+            --neon-glow-strong: 0 0 30px rgba(0, 245, 212, 0.5);
+            
+            /* 動畫時間 - 第三階段優化 */
+            --animation-fast: 0.2s;
+            --animation-normal: 0.3s;
+            --animation-slow: 0.5s;
+            
+            /* 字體系統 */
+            --font-family-en: 'Inter', -apple-system, BlinkMacSystemFont;
+            --font-family-cn: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei';
+            --font-size-base: 14px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            
+            /* 布局系統 */
+            --panel-radius: 8px;
+            --panel-padding: 20px;
+            --panel-margin: 16px;
+        }
+
+        body {
+            font-family: var(--font-family-en), var(--font-family-cn), sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 霓虹面板樣式 - 第三階段優化 */
+        .neon-panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--panel-radius);
+            padding: var(--panel-padding);
+            margin: var(--panel-margin);
+            transition: all var(--animation-normal) cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            will-change: transform, box-shadow, border-color;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .neon-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 245, 212, 0.1), transparent);
+            transition: left var(--animation-slow) ease;
+            pointer-events: none;
+        }
+
+        .neon-panel:hover {
+            border-color: var(--accent-color);
+            box-shadow: var(--neon-glow);
+            transform: translateY(-2px) scale(1.002);
+        }
+
+        .neon-panel:hover::before {
+            left: 100%;
+        }
+
+        .neon-panel.active {
+            border-color: var(--accent-color);
+            box-shadow: var(--neon-shadow);
+            animation: panel-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes panel-pulse {
+            0%, 100% {
+                box-shadow: var(--neon-shadow);
+            }
+            50% {
+                box-shadow: var(--neon-glow);
+            }
+        }
+
+        /* 微交互效果 - 點擊反饋 */
+        .neon-panel:active {
+            transform: translateY(-1px) scale(0.998);
+            transition-duration: var(--animation-fast);
+        }
+
+        /* 霓虹按鈕效果 - 第三階段優化 */
+        .neon-button {
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all var(--animation-normal) cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: var(--font-weight-medium);
+            position: relative;
+            overflow: hidden;
+            will-change: transform, background-color, box-shadow;
+            text-decoration: none;
+            display: inline-block;
+            margin: 8px;
+        }
+
+        .neon-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(0, 245, 212, 0.4), transparent);
+            transition: left var(--animation-normal) ease;
+            z-index: -1;
+        }
+
+        .neon-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(0, 245, 212, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all var(--animation-normal) ease;
+            z-index: -1;
+        }
+
+        .neon-button:hover {
+            background: var(--accent-color);
+            color: var(--bg-main);
+            box-shadow: var(--neon-glow);
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .neon-button:hover::before {
+            left: 100%;
+        }
+
+        .neon-button:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .neon-button:active {
+            transform: translateY(-1px) scale(0.98);
+            transition-duration: var(--animation-fast);
+        }
+
+        .neon-button:focus {
+            outline: none;
+            box-shadow: var(--neon-glow), 0 0 0 2px rgba(0, 245, 212, 0.3);
+        }
+
+        /* 按鈕加載狀態 */
+        .neon-button.loading {
+            pointer-events: none;
+            position: relative;
+        }
+
+        .neon-button.loading::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: button-spin 1s linear infinite;
+        }
+
+        @keyframes button-spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* 按鈕成功狀態 */
+        .neon-button.success {
+            border-color: var(--profit-green);
+            color: var(--profit-green);
+            animation: success-flash 0.5s ease;
+        }
+
+        .neon-button.success:hover {
+            background: var(--profit-green);
+            box-shadow: 0 0 20px rgba(41, 221, 196, 0.4);
+        }
+
+        @keyframes success-flash {
+            0%, 100% { 
+                box-shadow: none; 
+            }
+            50% { 
+                box-shadow: 0 0 20px rgba(41, 221, 196, 0.6);
+            }
+        }
+
+        /* 入場動畫 */
+        .fadeInUp {
+            animation: fadeInUp var(--animation-slow) ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 新增動畫效果 */
+        .pop-in {
+            animation: popIn var(--animation-normal) cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .slide-in-left {
+            animation: slideInLeft var(--animation-normal) ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* 數值顯示動畫 */
+        .value-display {
+            font-size: 24px;
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            transition: all var(--animation-fast) ease;
+            position: relative;
+        }
+
+        .value-display.positive {
+            color: var(--profit-green);
+            text-shadow: 0 0 8px rgba(41, 221, 196, 0.5);
+        }
+
+        .value-display.updating {
+            position: relative;
+        }
+
+        .value-display.updating::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 245, 212, 0.3) 50%, transparent 70%);
+            animation: data-update-sweep 1.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes data-update-sweep {
+            0% { 
+                transform: translateX(-100%) skewX(-45deg); 
+            }
+            100% { 
+                transform: translateX(300%) skewX(-45deg); 
+            }
+        }
+
+        /* 計數動畫效果 */
+        .value-display.counting {
+            animation: counting-glow 2s ease-in-out;
+        }
+
+        @keyframes counting-glow {
+            0%, 100% { 
+                text-shadow: 0 0 8px currentColor; 
+            }
+            50% { 
+                text-shadow: 0 0 16px currentColor, 0 0 32px currentColor; 
+            }
+        }
+
+        /* 加載骨架動畫 */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(0, 245, 212, 0.1) 25%, rgba(0, 245, 212, 0.2) 50%, rgba(0, 245, 212, 0.1) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite ease-in-out;
+            border-radius: 4px;
+            height: 20px;
+            margin: 5px 0;
+        }
+
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* 狀態指示器 */
+        .neon-status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            position: relative;
+        }
+
+        .neon-status-indicator.online {
+            background: var(--profit-green);
+            box-shadow: 0 0 10px var(--profit-green);
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { 
+                opacity: 1;
+                box-shadow: 0 0 10px currentColor;
+            }
+            50% { 
+                opacity: 0.7;
+                box-shadow: 0 0 20px currentColor;
+            }
+        }
+
+        /* 響應式設計 - 第三階段優化 */
+        @media (max-width: 768px) {
+            :root {
+                --panel-padding: 12px;
+                --panel-margin: 8px;
+                --animation-normal: 0.15s;
+                --animation-slow: 0.3s;
+            }
+            
+            .neon-button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            
+            /* 移動端優化動畫 */
+            .neon-panel:hover {
+                transform: none;
+                box-shadow: var(--neon-shadow);
+            }
+            
+            .neon-button:hover {
+                transform: none;
+            }
+        }
+
+        /* 工具類 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: var(--font-weight-semibold);
+            margin: 0 0 20px 0;
+            color: var(--text-primary);
+            text-shadow: 0 0 20px rgba(0, 245, 212, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: var(--font-weight-semibold);
+            color: var(--accent-color);
+            margin: 30px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 性能指標面板 */
+        .performance-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--panel-radius);
+            padding: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            z-index: 1000;
+        }
+
+        .fps-indicator {
+            color: var(--accent-color);
+            font-weight: var(--font-weight-semibold);
+        }
+    </style>
+</head>
+<body>
+    <!-- 性能監控面板 -->
+    <div class="performance-panel">
+        <div>FPS: <span class="fps-indicator" id="fps">--</span></div>
+        <div>動畫模式: <span id="animation-mode">平衡</span></div>
+    </div>
+
+    <div class="fadeInUp">
+        <h1 class="title">
+            <span style="font-size: 36px">⚡</span>
+            第三階段：動畫優化與微交互體驗完善
+        </h1>
+        <p style="color: var(--text-secondary); font-size: 16px; margin-bottom: 30px;">
+            v1.02第三階段 - 性能優化、響應式動畫、微交互完善
+        </p>
+    </div>
+
+    <div class="section-title fadeInUp" style="animation-delay: 0.1s;">
+        🎯 優化後的霓虹面板效果
+    </div>
+
+    <div class="grid fadeInUp" style="animation-delay: 0.2s;">
+        <div class="neon-panel" data-demo="hover-effect">
+            <h3 style="color: var(--text-primary); margin-top: 0;">
+                <span class="neon-status-indicator online"></span>
+                懸停光掃動畫
+            </h3>
+            <p style="color: var(--text-secondary);">
+                滑鼠懸停時會有光線掃過效果，並有輕微的縮放動畫
+            </p>
+        </div>
+
+        <div class="neon-panel active" data-demo="pulse-effect">
+            <h3 style="color: var(--accent-color); margin-top: 0;">活躍面板脈衝</h3>
+            <p style="color: var(--text-secondary);">
+                活躍狀態的面板會有持續的脈衝發光效果
+            </p>
+        </div>
+
+        <div class="neon-panel" data-demo="click-feedback">
+            <h3 style="color: var(--text-primary); margin-top: 0;">點擊反饋</h3>
+            <p style="color: var(--text-secondary);">
+                點擊面板時會有輕微的縮放反饋動畫
+            </p>
+        </div>
+    </div>
+
+    <div class="section-title fadeInUp" style="animation-delay: 0.3s;">
+        🎮 高級按鈕交互效果
+    </div>
+
+    <div class="neon-panel fadeInUp" style="animation-delay: 0.4s;">
+        <h3 style="color: var(--text-primary); margin-top: 0; margin-bottom: 20px;">按鈕狀態展示</h3>
+        <div>
+            <button class="neon-button" data-demo="normal">正常狀態</button>
+            <button class="neon-button loading" data-demo="loading">加載狀態</button>
+            <button class="neon-button success" data-demo="success">成功狀態</button>
+            <button class="neon-button" data-demo="hover-ripple" style="border-color: var(--profit-green); color: var(--profit-green);">懸停漣漪效果</button>
+        </div>
+        <p style="color: var(--text-secondary); margin-top: 16px; font-size: 14px;">
+            ✅ 光掃動畫、漣漪效果、點擊反饋、加載旋轉、成功閃爍
+        </p>
+    </div>
+
+    <div class="section-title fadeInUp" style="animation-delay: 0.5s;">
+        📊 數值更新動畫效果
+    </div>
+
+    <div class="grid fadeInUp" style="animation-delay: 0.6s;">
+        <div class="neon-panel">
+            <h4 style="color: var(--text-secondary); margin-top: 0;">總盈虧</h4>
+            <div class="value-display positive" id="profit-value">$0.00</div>
+            <button class="neon-button" style="margin-top: 12px; padding: 6px 12px; font-size: 12px;" onclick="animateProfit()">
+                模擬更新
+            </button>
+        </div>
+
+        <div class="neon-panel">
+            <h4 style="color: var(--text-secondary); margin-top: 0;">實時數據</h4>
+            <div class="value-display updating" style="color: var(--accent-color);">更新中...</div>
+            <div style="color: var(--text-secondary); font-size: 12px; margin-top: 8px;">
+                數據掃描動畫效果
+            </div>
+        </div>
+
+        <div class="neon-panel">
+            <h4 style="color: var(--text-secondary); margin-top: 0;">計數動畫</h4>
+            <div class="value-display counting" id="count-value" style="color: var(--profit-green);">1,247</div>
+            <div style="color: var(--text-secondary); font-size: 12px; margin-top: 8px;">
+                發光脈衝計數效果
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title fadeInUp" style="animation-delay: 0.7s;">
+        🔄 加載與入場動畫
+    </div>
+
+    <div class="neon-panel fadeInUp" style="animation-delay: 0.8s;">
+        <h3 style="color: var(--text-primary); margin-top: 0; margin-bottom: 20px;">不同入場動畫效果</h3>
+        <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+            <button class="neon-button" onclick="triggerFadeIn()">淡入上升</button>
+            <button class="neon-button" onclick="triggerSlideIn()">左滑入場</button>
+            <button class="neon-button" onclick="triggerPopIn()">彈跳入場</button>
+            <button class="neon-button" onclick="showSkeleton()">骨架加載</button>
+        </div>
+        
+        <div id="animation-demo-area" style="min-height: 100px; display: flex; align-items: center; justify-content: center; border: 1px dashed var(--border-color); border-radius: 4px;">
+            <span style="color: var(--text-secondary);">點擊上方按鈕查看不同動畫效果</span>
+        </div>
+    </div>
+
+    <div class="section-title fadeInUp" style="animation-delay: 0.9s;">
+        📱 響應式動畫適配
+    </div>
+
+    <div class="neon-panel fadeInUp" style="animation-delay: 1.0s;">
+        <h3 style="color: var(--text-primary); margin-top: 0;">自適應性能優化</h3>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
+            <div>
+                <h4 style="color: var(--accent-color);">桌面端 (>1200px)</h4>
+                <ul style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                    <li>完整動畫效果</li>
+                    <li>高性能模式</li>
+                    <li>復雜微交互</li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="color: var(--accent-color);">平板端 (768-1199px)</h4>
+                <ul style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                    <li>平衡動畫模式</li>
+                    <li>簡化部分效果</li>
+                    <li>保持核心交互</li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="color: var(--accent-color);">移動端 (<768px)</h4>
+                <ul style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+                    <li>低功耗模式</li>
+                    <li>去除懸停效果</li>
+                    <li>優化觸摸交互</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title fadeInUp" style="animation-delay: 1.1s;">
+        🎯 第三階段成果總結
+    </div>
+
+    <div class="neon-panel active fadeInUp" style="animation-delay: 1.2s; border-color: var(--accent-color); box-shadow: var(--neon-shadow);">
+        <h3 style="color: var(--accent-color); margin-top: 0; display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 24px;">⚡</span>
+            動畫優化與微交互體驗完善完成
+        </h3>
+        <div class="grid" style="grid-template-columns: repeat(2, 1fr); gap: 20px;">
+            <div>
+                <h4 style="color: var(--text-primary);">✅ 性能優化成就</h4>
+                <ul style="color: var(--text-secondary); line-height: 1.8;">
+                    <li>GPU加速transform和opacity動畫</li>
+                    <li>cubic-bezier緩動函數優化</li>
+                    <li>will-change屬性性能提示</li>
+                    <li>動畫節流和FPS監控</li>
+                    <li>響應式動畫適配系統</li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="color: var(--text-primary);">🎨 微交互增強</h4>
+                <ul style="color: var(--text-secondary); line-height: 1.8;">
+                    <li>霓虹面板光掃動畫</li>
+                    <li>按鈕漣漪和狀態反饋</li>
+                    <li>數值更新視覺動畫</li>
+                    <li>多樣化入場動畫</li>
+                    <li>完整動畫工具庫</li>
+                </ul>
+            </div>
+        </div>
+        <div style="margin-top: 20px; padding: 16px; background: rgba(0, 245, 212, 0.05); border-radius: 8px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 20px;">🚀</span>
+                <div>
+                    <div style="font-weight: var(--font-weight-semibold); color: var(--accent-color);">
+                        第三階段完成，準備進入第四階段
+                    </div>
+                    <div style="color: var(--text-secondary); font-size: 14px;">
+                        下一階段：測試調優和文檔完善
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 背景裝飾效果 -->
+    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: -1; background: radial-gradient(circle at 20% 80%, rgba(0, 245, 212, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 77, 109, 0.02) 0%, transparent 50%);"></div>
+
+    <script>
+        // 性能監控
+        let frameCount = 0;
+        let lastTime = performance.now();
+        let fps = 60;
+
+        function updateFPS() {
+            const currentTime = performance.now();
+            frameCount++;
+            
+            if (currentTime >= lastTime + 1000) {
+                fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                document.getElementById('fps').textContent = fps;
+                
+                // 根據FPS調整動畫模式顯示
+                const modeElement = document.getElementById('animation-mode');
+                if (fps < 30) {
+                    modeElement.textContent = '低功耗';
+                    modeElement.style.color = 'var(--loss-red)';
+                } else if (fps < 50) {
+                    modeElement.textContent = '平衡';
+                    modeElement.style.color = '#FFA726';
+                } else {
+                    modeElement.textContent = '高性能';
+                    modeElement.style.color = 'var(--profit-green)';
+                }
+                
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+            
+            requestAnimationFrame(updateFPS);
+        }
+
+        // 數值動畫函數
+        function animateValue(element, from, to, duration, formatter) {
+            const start = Date.now();
+            const diff = to - from;
+            
+            element.classList.add('updating');
+            
+            const animate = () => {
+                const elapsed = Date.now() - start;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // 使用緩動函數
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                const currentValue = from + (diff * easeProgress);
+                
+                element.textContent = formatter ? formatter(currentValue) : currentValue.toFixed(2);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    element.classList.remove('updating');
+                    element.classList.add('counting');
+                    setTimeout(() => {
+                        element.classList.remove('counting');
+                    }, 500);
+                }
+            };
+            
+            requestAnimationFrame(animate);
+        }
+
+        // 互動功能
+        function animateProfit() {
+            const element = document.getElementById('profit-value');
+            const from = parseFloat(element.textContent.replace(/[$,]/g, ''));
+            const to = from + (Math.random() * 1000 - 500);
+            animateValue(element, from, to, 1500, (value) => `$${value.toFixed(2)}`);
+        }
+
+        function triggerFadeIn() {
+            const area = document.getElementById('animation-demo-area');
+            area.innerHTML = '<div class="neon-panel fadeInUp" style="margin: 0;"><h4 style="margin: 0; color: var(--accent-color);">淡入上升動畫</h4></div>';
+        }
+
+        function triggerSlideIn() {
+            const area = document.getElementById('animation-demo-area');
+            area.innerHTML = '<div class="neon-panel slide-in-left" style="margin: 0;"><h4 style="margin: 0; color: var(--profit-green);">左滑入場動畫</h4></div>';
+        }
+
+        function triggerPopIn() {
+            const area = document.getElementById('animation-demo-area');
+            area.innerHTML = '<div class="neon-panel pop-in" style="margin: 0;"><h4 style="margin: 0; color: var(--loss-red);">彈跳入場動畫</h4></div>';
+        }
+
+        function showSkeleton() {
+            const area = document.getElementById('animation-demo-area');
+            area.innerHTML = `
+                <div style="width: 100%; max-width: 300px;">
+                    <div class="skeleton" style="height: 24px; margin-bottom: 8px;"></div>
+                    <div class="skeleton" style="height: 16px; width: 80%; margin-bottom: 8px;"></div>
+                    <div class="skeleton" style="height: 16px; width: 60%;"></div>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                area.innerHTML = '<div class="neon-panel fadeInUp" style="margin: 0;"><h4 style="margin: 0; color: var(--accent-color);">加載完成！</h4></div>';
+            }, 2000);
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 啟動FPS監控
+            updateFPS();
+            
+            // 自動數值動畫演示
+            setTimeout(() => {
+                const countElement = document.getElementById('count-value');
+                animateValue(countElement, 1247, 1689, 2000, (value) => value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+            }, 1000);
+
+            // 模擬數據更新
+            setInterval(() => {
+                const profitElement = document.getElementById('profit-value');
+                if (!profitElement.classList.contains('updating')) {
+                    const currentValue = parseFloat(profitElement.textContent.replace(/[$,]/g, ''));
+                    const newValue = currentValue + (Math.random() * 50 - 25);
+                    animateValue(profitElement, currentValue, newValue, 800, (value) => `$${value.toFixed(2)}`);
+                }
+            }, 5000);
+
+            console.log('🚀 第三階段動畫優化測試頁面已載入');
+            console.log('⚡ 性能監控、微交互動畫、響應式適配全部完成');
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>霓虹未來UI樣式測試 - v1.02第一階段</title>
+    <style>
+        /* 霓虹未來色彩系統 */
+        :root {
+            /* 主色彩系統 */
+            --bg-main: #0D0F1A;
+            --bg-panel: #161A25;
+            --border-color: #2D3748;
+            --text-primary: #E0E2F0;
+            --text-secondary: #7A81A3;
+            --accent-color: #00F5D4;
+            --profit-green: #29DDC4;
+            --loss-red: #FF4D6D;
+            
+            /* 霓虹效果 */
+            --neon-glow: 0 0 20px rgba(0, 245, 212, 0.3);
+            --neon-shadow: 0 0 10px rgba(0, 245, 212, 0.2);
+            --neon-glow-strong: 0 0 30px rgba(0, 245, 212, 0.5);
+            
+            /* 動畫時間 */
+            --animation-fast: 0.2s;
+            --animation-normal: 0.3s;
+            --animation-slow: 0.5s;
+            
+            /* 字體系統 */
+            --font-family-en: 'Inter', -apple-system, BlinkMacSystemFont;
+            --font-family-cn: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei';
+            --font-size-base: 14px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            
+            /* 布局系統 */
+            --panel-radius: 8px;
+            --panel-padding: 20px;
+            --panel-margin: 16px;
+        }
+
+        body {
+            font-family: var(--font-family-en), var(--font-family-cn), sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 霓虹面板入場動畫 */
+        .fadeInUp {
+            animation: fadeInUp var(--animation-slow) ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 呼吸脈衝動畫 */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.7;
+                transform: scale(1.02);
+            }
+        }
+
+        /* 數據閃爍動畫 */
+        .flash-green {
+            animation: flash-green var(--animation-fast) ease-in-out;
+        }
+
+        @keyframes flash-green {
+            0%, 100% { 
+                color: var(--text-primary); 
+            }
+            50% { 
+                color: var(--profit-green); 
+                text-shadow: 0 0 8px var(--profit-green);
+            }
+        }
+
+        /* 霓虹面板樣式 */
+        .neon-panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--panel-radius);
+            padding: var(--panel-padding);
+            margin: var(--panel-margin);
+            transition: all var(--animation-normal) ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .neon-panel:hover {
+            border-color: var(--accent-color);
+            box-shadow: var(--neon-glow);
+            transform: translateY(-2px);
+        }
+
+        .neon-panel.active {
+            border-color: var(--accent-color);
+            box-shadow: var(--neon-shadow);
+        }
+
+        /* 霓虹按鈕效果 */
+        .neon-button {
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all var(--animation-normal) ease;
+            font-weight: var(--font-weight-medium);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+            margin: 8px;
+        }
+
+        .neon-button:hover {
+            background: var(--accent-color);
+            color: var(--bg-main);
+            box-shadow: var(--neon-glow);
+            transform: translateY(-2px);
+        }
+
+        /* 霓虹狀態指示器 */
+        .neon-status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            position: relative;
+        }
+
+        .neon-status-indicator.online {
+            background: var(--profit-green);
+            box-shadow: 0 0 10px var(--profit-green);
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { 
+                opacity: 1;
+                box-shadow: 0 0 10px currentColor;
+            }
+            50% { 
+                opacity: 0.7;
+                box-shadow: 0 0 20px currentColor;
+            }
+        }
+
+        /* 數值顯示 */
+        .value-display {
+            font-size: 24px;
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            transition: all var(--animation-fast) ease;
+        }
+
+        .value-display.positive {
+            color: var(--profit-green);
+            text-shadow: 0 0 8px rgba(41, 221, 196, 0.5);
+        }
+
+        .value-display.negative {
+            color: var(--loss-red);
+            text-shadow: 0 0 8px rgba(255, 77, 109, 0.5);
+        }
+
+        /* 網格佈局 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: var(--font-weight-semibold);
+            margin: 0 0 20px 0;
+            color: var(--text-primary);
+            text-shadow: 0 0 20px rgba(0, 245, 212, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: var(--font-weight-semibold);
+            color: var(--accent-color);
+            margin: 20px 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="fadeInUp">
+        <h1 class="title">
+            <span style="font-size: 36px">🚀</span>
+            霓虹未來UI樣式系統測試
+        </h1>
+        <p style="color: var(--text-secondary); font-size: 16px; margin-bottom: 30px;">
+            v1.02第一階段 - CSS變數系統與基礎動畫效果
+        </p>
+    </div>
+
+    <div class="section-title fadeInUp" style="animation-delay: 0.1s;">
+        ⚡ 核心面板展示
+    </div>
+
+    <div class="grid fadeInUp" style="animation-delay: 0.2s;">
+        <div class="neon-panel">
+            <h3 style="color: var(--text-primary); margin-top: 0;">
+                <span class="neon-status-indicator online"></span>
+                活躍訂單
+            </h3>
+            <div class="value-display positive">1,247</div>
+            <p style="color: var(--text-secondary); margin: 8px 0 0 0;">運行中的策略數量</p>
+        </div>
+
+        <div class="neon-panel active">
+            <h3 style="color: var(--text-primary); margin-top: 0;">
+                💰 賬戶權益
+            </h3>
+            <div class="value-display" style="color: var(--accent-color);">$125,490.56</div>
+            <p style="color: var(--text-secondary); margin: 8px 0 0 0;">USDT</p>
+        </div>
+
+        <div class="neon-panel" style="border-color: var(--profit-green); box-shadow: 0 0 10px rgba(41, 221, 196, 0.2);">
+            <h3 style="color: var(--text-primary); margin-top: 0;">
+                📈 總盈虧
+            </h3>
+            <div class="value-display positive flash-green">+$4,567.89</div>
+            <p style="color: var(--text-secondary); margin: 8px 0 0 0;">今日收益</p>
+        </div>
+
+        <div class="neon-panel">
+            <h3 style="color: var(--text-primary); margin-top: 0;">
+                🛡️ 風險等級
+            </h3>
+            <div class="value-display" style="color: #FFA726;">MEDIUM</div>
+            <p style="color: var(--text-secondary); margin: 8px 0 0 0;">系統風險評估</p>
+        </div>
+    </div>
+
+    <div class="section-title fadeInUp" style="animation-delay: 0.3s;">
+        🎛️ 霓虹按鈕系統
+    </div>
+
+    <div class="fadeInUp" style="animation-delay: 0.4s; margin: 20px 0;">
+        <a href="#" class="neon-button pulse">啟動交易</a>
+        <a href="#" class="neon-button">暫停交易</a>
+        <a href="#" class="neon-button" style="border-color: #FFA726; color: #FFA726;">停止交易</a>
+        <a href="#" class="neon-button" style="border-color: var(--loss-red); color: var(--loss-red);">緊急停止</a>
+    </div>
+
+    <div class="section-title fadeInUp" style="animation-delay: 0.5s;">
+        📊 交易數據展示
+    </div>
+
+    <div class="neon-panel fadeInUp" style="animation-delay: 0.6s;">
+        <h3 style="color: var(--text-primary); margin-top: 0;">實時交易狀態</h3>
+        <div style="display: flex; gap: 20px; align-items: center; margin: 20px 0;">
+            <div style="display: flex; align-items: center;">
+                <span class="neon-status-indicator online pulse"></span>
+                <span>系統連接正常</span>
+            </div>
+            <div>|</div>
+            <div>交易狀態: <span style="color: var(--profit-green);">運行中</span></div>
+            <div>|</div>
+            <div>最後更新: <span style="color: var(--text-secondary);">2025-01-20 15:30:45</span></div>
+        </div>
+    </div>
+
+    <div class="section-title fadeInUp" style="animation-delay: 0.7s;">
+        🎨 色彩系統展示
+    </div>
+
+    <div class="neon-panel fadeInUp" style="animation-delay: 0.8s;">
+        <h3 style="color: var(--text-primary); margin-top: 0;">霓虹未來色彩規格</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin: 20px 0;">
+            <div style="text-align: center;">
+                <div style="width: 100%; height: 40px; background: var(--accent-color); border-radius: 4px; margin-bottom: 8px; box-shadow: var(--neon-shadow);"></div>
+                <div style="font-size: 12px; color: var(--text-secondary);">主強調色</div>
+                <div style="font-size: 11px; color: var(--text-secondary);">#00F5D4</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="width: 100%; height: 40px; background: var(--profit-green); border-radius: 4px; margin-bottom: 8px; box-shadow: 0 0 10px rgba(41, 221, 196, 0.3);"></div>
+                <div style="font-size: 12px; color: var(--text-secondary);">盈利色</div>
+                <div style="font-size: 11px; color: var(--text-secondary);">#29DDC4</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="width: 100%; height: 40px; background: var(--loss-red); border-radius: 4px; margin-bottom: 8px; box-shadow: 0 0 10px rgba(255, 77, 109, 0.3);"></div>
+                <div style="font-size: 12px; color: var(--text-secondary);">虧損色</div>
+                <div style="font-size: 11px; color: var(--text-secondary);">#FF4D6D</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="width: 100%; height: 40px; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 8px;"></div>
+                <div style="font-size: 12px; color: var(--text-secondary);">面板背景</div>
+                <div style="font-size: 11px; color: var(--text-secondary);">#161A25</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 背景裝飾效果 -->
+    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: -1; background: radial-gradient(circle at 20% 80%, rgba(0, 245, 212, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 77, 109, 0.02) 0%, transparent 50%);"></div>
+
+    <script>
+        // 添加互動效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 為數值顯示添加點擊閃爍效果
+            const valueDisplays = document.querySelectorAll('.value-display');
+            valueDisplays.forEach(display => {
+                display.addEventListener('click', function() {
+                    this.classList.add('flash-green');
+                    setTimeout(() => {
+                        this.classList.remove('flash-green');
+                    }, 200);
+                });
+            });
+
+            // 添加按鈕點擊效果
+            const buttons = document.querySelectorAll('.neon-button');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.style.transform = 'translateY(0)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 100);
+                });
+            });
+
+            console.log('🚀 霓虹未來UI樣式測試頁面已載入');
+            console.log('📊 第一階段實施完成：CSS變數系統 + 基礎動畫效果');
+        });
+    </script>
+</body>
+</html> 

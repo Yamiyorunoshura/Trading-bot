@@ -45,18 +45,73 @@ const DynamicPositionConfig: React.FC<DynamicPositionConfigProps> = ({ form, isE
   }
 
   return (
-    <div>
+    <div className="neon-dashboard fadeInUp" style={{ padding: '20px', minHeight: '100vh' }}>
+      <Space direction="vertical" style={{ width: '100%' }} size="large">
+        {/* 霓虹未來風格頁面標題 */}
+        <div className="fadeInUp" style={{ marginBottom: '20px', animationDelay: '0.1s' }}>
+          <h1 style={{ 
+            fontSize: '32px', 
+            fontWeight: 'var(--font-weight-semibold)', 
+            margin: 0,
+            color: 'var(--text-primary)',
+            textShadow: '0 0 20px rgba(0, 245, 212, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <ThunderboltOutlined style={{ fontSize: '36px', color: 'var(--accent-color)' }} />
+            動態倉位策略配置
+          </h1>
+          <div style={{ 
+            marginTop: '8px', 
+            color: 'var(--text-secondary)',
+            fontSize: '16px'
+          }}>
+            基於多指標綜合分析的智能杠桿交易策略配置界面
+          </div>
+        </div>
+
       <Alert
-        message="動態倉位策略 - 杠桿版"
-        description="基於多指標綜合分析的智能杠桿交易策略，支持1-10倍動態杠桿調整"
+        message="🚀 動態倉位策略 - 杠桿版"
+        description="基於多指標綜合分析的智能杠桿交易策略，支持1-10倍動態杠桿調整，實現風險與收益的最佳平衡"
         type="info"
         showIcon
-        icon={<ThunderboltOutlined />}
-        style={{ marginBottom: 16 }}
+        icon={<ThunderboltOutlined style={{ color: 'var(--accent-color)' }} />}
+        className="fadeInUp"
+        style={{ 
+          marginBottom: 16,
+          animationDelay: '0.2s',
+          background: 'rgba(0, 245, 212, 0.1)',
+          border: '1px solid var(--accent-color)',
+          borderRadius: 'var(--panel-radius)',
+          boxShadow: '0 0 10px rgba(0, 245, 212, 0.2)'
+        }}
       />
 
-      {/* 基本配置 */}
-      <Card title="基本配置" size="small" style={{ marginBottom: 16 }}>
+      {/* 基本配置 - 霓虹面板 */}
+      <Card 
+        className="neon-panel fadeInUp"
+        title={
+          <span style={{ 
+            color: 'var(--text-primary)', 
+            fontSize: '16px',
+            fontWeight: 'var(--font-weight-semibold)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <BarChartOutlined style={{ color: 'var(--accent-color)' }} />
+            基本配置
+          </span>
+        }
+        size="small" 
+        style={{ 
+          marginBottom: 16,
+          animationDelay: '0.3s',
+          background: 'var(--bg-panel)',
+          border: '1px solid var(--border-color)'
+        }}
+      >
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
@@ -416,6 +471,20 @@ const DynamicPositionConfig: React.FC<DynamicPositionConfigProps> = ({ form, isE
           </Col>
         </Row>
       </Card>
+      
+      </Space>
+      
+      {/* 背景裝飾效果 */}
+      <div className="neon-background-effect" style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        pointerEvents: 'none',
+        zIndex: -1,
+        background: 'radial-gradient(circle at 20% 80%, rgba(0, 245, 212, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 77, 109, 0.02) 0%, transparent 50%)'
+      }} />
     </div>
   )
 }

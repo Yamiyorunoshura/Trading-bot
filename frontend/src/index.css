@@ -1,3 +1,39 @@
+/* 霓虹未來色彩系統 */
+:root {
+  /* 主色彩系統 */
+  --bg-main: #0D0F1A;
+  --bg-panel: #161A25;
+  --border-color: #2D3748;
+  --text-primary: #E0E2F0;
+  --text-secondary: #7A81A3;
+  --accent-color: #00F5D4;
+  --profit-green: #29DDC4;
+  --loss-red: #FF4D6D;
+  
+  /* 霓虹效果 */
+  --neon-glow: 0 0 20px rgba(0, 245, 212, 0.3);
+  --neon-shadow: 0 0 10px rgba(0, 245, 212, 0.2);
+  --neon-glow-strong: 0 0 30px rgba(0, 245, 212, 0.5);
+  
+  /* 動畫時間 */
+  --animation-fast: 0.2s;
+  --animation-normal: 0.3s;
+  --animation-slow: 0.5s;
+  
+  /* 字體系統 */
+  --font-family-en: 'Inter', -apple-system, BlinkMacSystemFont;
+  --font-family-cn: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei';
+  --font-size-base: 14px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  
+  /* 布局系統 */
+  --panel-radius: 8px;
+  --panel-padding: 20px;
+  --panel-margin: 16px;
+}
+
 /* 全局樣式 */
 * {
   margin: 0;
@@ -6,13 +42,15 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: var(--font-family-en), var(--font-family-cn), 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #0a0a0a;
-  color: #ffffff;
+  background: var(--bg-main);
+  color: var(--text-primary);
   overflow-x: hidden;
   overflow-y: auto;
+  font-size: var(--font-size-base);
+  line-height: 1.6;
 }
 
 #root {
@@ -21,56 +59,77 @@ body {
   overflow: auto;
 }
 
-/* 自定義 Ant Design 暗色主題 */
+/* 霓虹未來 Ant Design 主題覆蓋 */
 .ant-layout {
-  background: #0a0a0a !important;
+  background: var(--bg-main) !important;
 }
 
 .ant-layout-header {
-  background: #1a1a1a !important;
-  border-bottom: 1px solid #333 !important;
+  background: var(--bg-panel) !important;
+  border-bottom: 1px solid var(--border-color) !important;
 }
 
 .ant-layout-sider {
-  background: #141414 !important;
+  background: var(--bg-panel) !important;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
 }
 
 .ant-layout-content {
-  background: #0a0a0a !important;
+  background: var(--bg-main) !important;
+  padding: var(--panel-margin);
 }
 
 .ant-menu-dark {
-  background: #141414 !important;
+  background: var(--bg-panel) !important;
+  border-right: 1px solid var(--border-color) !important;
 }
 
 .ant-menu-dark .ant-menu-item {
-  color: #ffffff !important;
+  color: var(--text-primary) !important;
+  transition: all var(--animation-normal) ease;
+  border-radius: 6px;
+  margin: 4px 8px;
 }
 
 .ant-menu-dark .ant-menu-item:hover {
-  background: #262626 !important;
+  background: rgba(0, 245, 212, 0.1) !important;
+  color: var(--accent-color) !important;
+  border-color: var(--accent-color) !important;
 }
 
 .ant-menu-dark .ant-menu-item-selected {
-  background: #1890ff !important;
+  background: var(--accent-color) !important;
+  color: var(--bg-main) !important;
+  box-shadow: var(--neon-shadow);
 }
 
-/* 卡片樣式 */
+.ant-menu-dark .ant-menu-item-selected::after {
+  border-right-color: var(--accent-color) !important;
+}
+
+/* 霓虹交易卡片樣式 */
 .trading-card {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 20px;
-  margin: 10px 0;
-  transition: all 0.3s ease;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--panel-radius);
+  padding: var(--panel-padding);
+  margin: var(--panel-margin) 0;
+  transition: all var(--animation-normal) ease;
+  backdrop-filter: blur(10px);
 }
 
 .trading-card:hover {
-  border-color: #1890ff;
-  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
+  border-color: var(--accent-color);
+  box-shadow: var(--neon-glow);
+  transform: translateY(-2px);
 }
 
-/* 狀態指示器 */
+.trading-card.active {
+  border-color: var(--accent-color);
+  box-shadow: var(--neon-shadow);
+}
+
+/* 霓虹狀態指示器 */
 .status-indicator {
   display: inline-block;
   width: 8px;
@@ -80,37 +139,212 @@ body {
 }
 
 .status-indicator.online {
-  background: #52c41a;
-  box-shadow: 0 0 6px #52c41a;
+  background: var(--profit-green);
+  box-shadow: 0 0 8px var(--profit-green);
+  animation: pulse-glow 2s infinite;
 }
 
 .status-indicator.offline {
-  background: #ff4d4f;
-  box-shadow: 0 0 6px #ff4d4f;
+  background: var(--loss-red);
+  box-shadow: 0 0 8px var(--loss-red);
 }
 
 .status-indicator.warning {
-  background: #faad14;
-  box-shadow: 0 0 6px #faad14;
+  background: #FFA726;
+  box-shadow: 0 0 8px #FFA726;
 }
 
-/* 數值顯示 */
+/* 霓虹數值顯示 */
 .value-display {
   font-size: 24px;
-  font-weight: bold;
-  color: #ffffff;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  transition: all var(--animation-fast) ease;
 }
 
 .value-display.positive {
-  color: #52c41a;
+  color: var(--profit-green);
+  text-shadow: 0 0 8px rgba(41, 221, 196, 0.5);
 }
 
 .value-display.negative {
-  color: #ff4d4f;
+  color: var(--loss-red);
+  text-shadow: 0 0 8px rgba(255, 77, 109, 0.5);
 }
 
 .value-display.neutral {
-  color: #faad14;
+  color: var(--accent-color);
+  text-shadow: 0 0 8px rgba(0, 245, 212, 0.3);
+}
+
+/* 大數值顯示 */
+.value-display-large {
+  font-size: 32px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  transition: all var(--animation-fast) ease;
+  line-height: 1.2;
+}
+
+.value-display-large.positive {
+  color: var(--profit-green);
+  text-shadow: 0 0 12px rgba(41, 221, 196, 0.6);
+}
+
+.value-display-large.negative {
+  color: var(--loss-red);
+  text-shadow: 0 0 12px rgba(255, 77, 109, 0.6);
+}
+
+/* 數值變化動畫 - 第三階段增強 */
+.value-display.flash {
+  animation: valueFlash var(--animation-normal) ease-in-out;
+}
+
+@keyframes valueFlash {
+  0%, 100% { 
+    transform: scale(1); 
+  }
+  50% { 
+    transform: scale(1.05);
+  }
+}
+
+/* 數據更新動畫效果 */
+.value-display.updating {
+  position: relative;
+}
+
+.value-display.updating::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(0, 245, 212, 0.3) 50%, transparent 70%);
+  animation: data-update-sweep 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes data-update-sweep {
+  0% { 
+    transform: translateX(-100%) skewX(-45deg); 
+  }
+  100% { 
+    transform: translateX(300%) skewX(-45deg); 
+  }
+}
+
+/* 計數動畫效果 */
+.value-display.counting {
+  animation: counting-glow 2s ease-in-out;
+}
+
+@keyframes counting-glow {
+  0%, 100% { 
+    text-shadow: 0 0 8px currentColor; 
+  }
+  50% { 
+    text-shadow: 0 0 16px currentColor, 0 0 32px currentColor; 
+  }
+}
+
+/* 加載骨架動畫 */
+.skeleton {
+  background: linear-gradient(90deg, rgba(0, 245, 212, 0.1) 25%, rgba(0, 245, 212, 0.2) 50%, rgba(0, 245, 212, 0.1) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite ease-in-out;
+  border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* 彈出動畫 */
+.pop-in {
+  animation: popIn var(--animation-normal) cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 滑入動畫 */
+.slide-in-left {
+  animation: slideInLeft var(--animation-normal) ease-out;
+}
+
+.slide-in-right {
+  animation: slideInRight var(--animation-normal) ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 旋轉加載動畫 */
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+.spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 心跳動畫 */
+.heartbeat {
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+  0%, 100% { 
+    transform: scale(1); 
+  }
+  14% { 
+    transform: scale(1.1); 
+  }
+  28% { 
+    transform: scale(1); 
+  }
+  42% { 
+    transform: scale(1.1); 
+  }
+  56% { 
+    transform: scale(1); 
+  }
 }
 
 /* 圖表容器 */
@@ -123,20 +357,94 @@ body {
   margin: 10px 0;
 }
 
-/* 響應式設計 */
+/* 響應式設計 - 第三階段優化 */
+@media (max-width: 1200px) {
+  :root {
+    --panel-padding: 16px;
+    --panel-margin: 12px;
+    --animation-normal: 0.2s;
+  }
+  
+  .neon-panel {
+    padding: var(--panel-padding);
+    margin: var(--panel-margin);
+  }
+  
+  .neon-button {
+    padding: 10px 20px;
+  }
+}
+
 @media (max-width: 768px) {
+  :root {
+    --panel-padding: 12px;
+    --panel-margin: 8px;
+    --animation-normal: 0.15s;
+    --animation-slow: 0.3s;
+  }
+  
   .trading-card {
-    padding: 15px;
-    margin: 5px 0;
+    padding: var(--panel-padding);
+    margin: var(--panel-margin) 0;
   }
   
   .value-display {
-    font-size: 20px;
+    font-size: 18px;
+  }
+  
+  .value-display-large {
+    font-size: 24px;
   }
   
   .chart-container {
     height: 250px;
-    padding: 15px;
+    padding: var(--panel-padding);
+  }
+  
+  .neon-button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  
+  /* 移動端優化動畫 */
+  .neon-panel:hover {
+    transform: none;
+    box-shadow: var(--neon-shadow);
+  }
+  
+  .neon-button:hover {
+    transform: none;
+  }
+  
+  .fadeInUp {
+    animation-duration: var(--animation-normal);
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --panel-padding: 10px;
+    --panel-margin: 6px;
+    --font-size-base: 13px;
+  }
+  
+  .value-display {
+    font-size: 16px;
+  }
+  
+  .value-display-large {
+    font-size: 20px;
+  }
+  
+  /* 極小屏幕簡化動畫 */
+  * {
+    animation-duration: 0.1s !important;
+  }
+  
+  .neon-panel::before,
+  .neon-button::before,
+  .neon-button::after {
+    display: none;
   }
 }
 
@@ -159,9 +467,9 @@ body {
   background: #555;
 }
 
-/* 動畫效果 */
+/* 霓虹未來動畫效果 */
 .fade-in {
-  animation: fadeIn 0.3s ease-in;
+  animation: fadeIn var(--animation-normal) ease-in;
 }
 
 @keyframes fadeIn {
@@ -175,19 +483,271 @@ body {
   }
 }
 
+/* 霓虹面板入場動畫 */
+.fadeInUp {
+  animation: fadeInUp var(--animation-slow) ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 呼吸脈衝動畫 */
 .pulse {
   animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-  0% {
+  0%, 100% { 
+    opacity: 1;
     transform: scale(1);
+  }
+  50% { 
+    opacity: 0.7;
+    transform: scale(1.02);
+  }
+}
+
+/* 數據閃爍動畫 */
+.flash-green {
+  animation: flash-green var(--animation-fast) ease-in-out;
+}
+
+@keyframes flash-green {
+  0%, 100% { 
+    color: var(--text-primary); 
+  }
+  50% { 
+    color: var(--profit-green); 
+    text-shadow: 0 0 8px var(--profit-green);
+  }
+}
+
+.flash-red {
+  animation: flash-red var(--animation-fast) ease-in-out;
+}
+
+@keyframes flash-red {
+  0%, 100% { 
+    color: var(--text-primary); 
+  }
+  50% { 
+    color: var(--loss-red);
+    text-shadow: 0 0 8px var(--loss-red);
+  }
+}
+
+/* 霓虹面板樣式 - 第三階段優化 */
+.neon-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--panel-radius);
+  padding: var(--panel-padding);
+  margin: var(--panel-margin);
+  transition: all var(--animation-normal) cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  will-change: transform, box-shadow, border-color;
+  position: relative;
+  overflow: hidden;
+}
+
+.neon-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 245, 212, 0.1), transparent);
+  transition: left var(--animation-slow) ease;
+  pointer-events: none;
+}
+
+.neon-panel:hover {
+  border-color: var(--accent-color);
+  box-shadow: var(--neon-glow);
+  transform: translateY(-2px) scale(1.002);
+}
+
+.neon-panel:hover::before {
+  left: 100%;
+}
+
+.neon-panel.active {
+  border-color: var(--accent-color);
+  box-shadow: var(--neon-shadow);
+  animation: panel-pulse 3s ease-in-out infinite;
+}
+
+@keyframes panel-pulse {
+  0%, 100% {
+    box-shadow: var(--neon-shadow);
   }
   50% {
-    transform: scale(1.05);
+    box-shadow: var(--neon-glow);
   }
-  100% {
-    transform: scale(1);
+}
+
+/* 微交互效果 - 點擊反饋 */
+.neon-panel:active {
+  transform: translateY(-1px) scale(0.998);
+  transition-duration: var(--animation-fast);
+}
+
+/* 霓虹按鈕效果 - 第三階段優化 */
+.neon-button {
+  background: transparent;
+  border: 2px solid var(--accent-color);
+  color: var(--accent-color);
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--animation-normal) cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: var(--font-weight-medium);
+  position: relative;
+  overflow: hidden;
+  will-change: transform, background-color, box-shadow;
+}
+
+.neon-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(0, 245, 212, 0.4), transparent);
+  transition: left var(--animation-normal) ease;
+  z-index: -1;
+}
+
+.neon-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(0, 245, 212, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all var(--animation-normal) ease;
+  z-index: -1;
+}
+
+.neon-button:hover {
+  background: var(--accent-color);
+  color: var(--bg-main);
+  box-shadow: var(--neon-glow);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.neon-button:hover::before {
+  left: 100%;
+}
+
+.neon-button:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+.neon-button:active {
+  transform: translateY(-1px) scale(0.98);
+  transition-duration: var(--animation-fast);
+}
+
+.neon-button:focus {
+  outline: none;
+  box-shadow: var(--neon-glow), 0 0 0 2px rgba(0, 245, 212, 0.3);
+}
+
+/* 按鈕加載狀態 */
+.neon-button.loading {
+  pointer-events: none;
+  position: relative;
+}
+
+.neon-button.loading::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: button-spin 1s linear infinite;
+}
+
+@keyframes button-spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* 按鈕成功狀態 */
+.neon-button.success {
+  border-color: var(--profit-green);
+  color: var(--profit-green);
+  animation: success-flash 0.5s ease;
+}
+
+.neon-button.success:hover {
+  background: var(--profit-green);
+  box-shadow: 0 0 20px rgba(41, 221, 196, 0.4);
+}
+
+@keyframes success-flash {
+  0%, 100% { 
+    box-shadow: none; 
+  }
+  50% { 
+    box-shadow: 0 0 20px rgba(41, 221, 196, 0.6);
+  }
+}
+
+/* 霓虹狀態指示器 */
+.neon-status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+  position: relative;
+}
+
+.neon-status-indicator.online {
+  background: var(--profit-green);
+  box-shadow: 0 0 10px var(--profit-green);
+  animation: pulse-glow 2s infinite;
+}
+
+.neon-status-indicator.offline {
+  background: var(--loss-red);
+  box-shadow: 0 0 10px var(--loss-red);
+}
+
+.neon-status-indicator.warning {
+  background: #FFA726;
+  box-shadow: 0 0 10px #FFA726;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    opacity: 1;
+    box-shadow: 0 0 10px currentColor;
+  }
+  50% { 
+    opacity: 0.7;
+    box-shadow: 0 0 20px currentColor;
   }
 }
 
