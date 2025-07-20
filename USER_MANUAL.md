@@ -1,9 +1,10 @@
-# 📚 量化交易機器人1.0 - 使用手冊
+# 📚 量化交易機器人 v1.03 - 使用手冊
 
 ## 🎯 目錄
 - [快速開始](#快速開始)
 - [功能介紹](#功能介紹)
 - [使用教程](#使用教程)
+- [高級功能 (v1.03)](#高級功能-v103)
 - [高級配置](#高級配置)
 - [故障排除](#故障排除)
 - [常見問題](#常見問題)
@@ -111,6 +112,63 @@ cd frontend && npm run tauri dev
 3. 配置數據庫連接
 4. 查看系統運行日誌
 
+## 🚀 高級功能 (v1.03)
+
+### 7. 智能參數優化 (Advanced Optimization)
+**主要功能：**
+- 🧠 智能優化算法選擇
+- 📊 四種優化方法（網格搜索、遺傳算法、貝葉斯優化、隨機搜索）
+- ⚡ 並行處理和性能預測
+- 🎯 多目標優化支持
+
+**使用方法：**
+1. 在回測分析中選擇"參數優化"
+2. 設置參數搜索範圍
+3. 選擇優化目標（夏普比率、最大回撤等）
+4. 點擊"開始優化"運行優化
+5. 查看優化結果和參數建議
+
+### 8. 高級風險分析 (Advanced Risk Analysis)
+**主要功能：**
+- 📊 七種核心風險指標（VaR、CVaR、Calmar、Omega、Sortino等）
+- 🔬 壓力測試和極端情況模擬
+- 🎲 蒙地卡羅風險預測
+- 📈 A-F級風險評級系統
+
+**使用方法：**
+1. 在風險管理中選擇"高級分析"
+2. 選擇風險指標類型
+3. 設置分析參數
+4. 運行風險分析
+5. 查看風險報告和建議
+
+### 9. 專業報告生成 (Professional Reporting)
+**主要功能：**
+- 📄 四種輸出格式（PDF、Excel、HTML、JSON）
+- 🎨 可定制報告模板
+- 📊 豐富的數據可視化
+- 🔄 批量報告生成
+
+**使用方法：**
+1. 在分析結果頁面選擇"生成報告"
+2. 選擇報告類型和格式
+3. 自定義報告內容和樣式
+4. 點擊"生成報告"
+5. 下載或分享報告
+
+### 10. 實時性能監控 (Performance Monitoring)
+**主要功能：**
+- ⚡ 全方位系統性能追蹤
+- 🔍 智能瓶頸檢測
+- 📊 實時UX指標監控
+- 📈 性能基準和優化建議
+
+**使用方法：**
+1. 在系統設置中啟用"性能監控"
+2. 查看實時性能指標
+3. 監控系統資源使用
+4. 接收性能優化建議
+
 ## 📖 使用教程
 
 ### 新手入門教程
@@ -185,6 +243,38 @@ cd frontend && npm run tauri dev
 3. 設置風險控制參數
 4. 保存並測試新參數
 
+### v1.03 高級功能教程
+
+#### 智能參數優化
+1. 在回測分析中選擇"參數優化"
+2. 設置優化參數：
+   - 優化目標：夏普比率
+   - 參數範圍：快線週期 5-20，慢線週期 15-50
+   - 優化算法：自動選擇
+   - 最大迭代次數：100
+3. 點擊"開始優化"
+4. 等待優化完成，查看最佳參數組合
+
+#### 高級風險分析
+1. 在風險管理中選擇"高級分析"
+2. 選擇分析類型：
+   - VaR分析：價值風險計算
+   - 壓力測試：極端情況模擬
+   - 蒙地卡羅模擬：風險預測
+3. 設置分析參數
+4. 運行分析並查看結果
+
+#### 專業報告生成
+1. 在分析結果頁面選擇"生成報告"
+2. 選擇報告類型：
+   - 綜合報告：完整分析報告
+   - 執行摘要：簡要總結
+   - 風險報告：風險分析專項
+   - 優化報告：參數優化結果
+3. 選擇輸出格式：PDF、Excel、HTML、JSON
+4. 自定義報告樣式和內容
+5. 生成並下載報告
+
 ## ⚙️ 高級配置
 
 ### 配置文件詳解
@@ -193,7 +283,7 @@ cd frontend && npm run tauri dev
 ```toml
 [application]
 name = "trading-bot"
-version = "1.0.0"
+version = "1.03.0"
 debug = true                    # 調試模式
 
 [trading]
@@ -209,6 +299,21 @@ testnet = true                 # 測試網絡
 [webserver]
 host = "127.0.0.1"            # 服務器地址
 port = 8080                   # 服務器端口
+
+[optimization]
+max_workers = 4               # 最大並行工作數
+timeout_seconds = 3600        # 優化超時時間
+early_stopping = true         # 早期停止
+
+[risk_analysis]
+var_confidence = 0.95         # VaR置信度
+monte_carlo_simulations = 10000  # 蒙地卡羅模擬次數
+stress_test_scenarios = 5     # 壓力測試場景數
+
+[reporting]
+default_format = "pdf"         # 默認報告格式
+template_path = "templates"    # 模板路徑
+enable_branding = true        # 啟用品牌定制
 ```
 
 #### .env 文件
@@ -224,6 +329,12 @@ BINANCE_TESTNET=true
 # 應用配置
 DEMO_MODE=true
 LOG_LEVEL=info
+
+# v1.03 高級功能配置
+OPTIMIZATION_ENABLED=true
+RISK_ANALYSIS_ENABLED=true
+REPORTING_ENABLED=true
+PERFORMANCE_MONITORING=true
 ```
 
 ### 數據庫設置
@@ -249,99 +360,150 @@ DATABASE_URL=postgresql://user:password@localhost/trading_bot
 ### 性能優化
 
 #### 系統資源配置
-- **CPU**: 建議4核心以上
-- **內存**: 建議8GB以上
-- **磁盤**: 建議SSD，至少10GB可用空間
-- **網絡**: 穩定的網絡連接
-
-#### 應用優化
 ```toml
-[ui]
-chart_update_interval = 1000   # 圖表更新間隔(毫秒)
-max_chart_points = 1000        # 圖表最大數據點
-
-[trading]
-max_concurrent_orders = 10     # 最大併發訂單數
-order_timeout = 30             # 訂單超時時間(秒)
+[performance]
+max_memory_usage = "2GB"      # 最大記憶體使用
+cpu_threads = 4               # CPU線程數
+cache_size = "512MB"          # 緩存大小
+enable_gpu_acceleration = true # GPU加速
 ```
 
-## 🔧 故障排除
+#### 優化建議
+1. **記憶體優化**：
+   - 設置適當的緩存大小
+   - 定期清理歷史數據
+   - 使用數據分頁
 
-### 常見問題快速解決
+2. **CPU優化**：
+   - 調整並行處理線程數
+   - 啟用早期停止機制
+   - 優化算法參數
+
+3. **網絡優化**：
+   - 使用WebSocket連接
+   - 實現數據緩存
+   - 優化API調用頻率
+
+## 🛠️ 故障排除
+
+### 常見問題
 
 #### 1. 應用無法啟動
+**症狀**：啟動腳本執行失敗
+**解決方案**：
 ```bash
-# 檢查依賴
+# 檢查環境
 ./scripts/diagnostic.sh
 
 # 重新安裝依賴
 cargo clean && cargo build
-cd frontend && rm -rf node_modules && npm install
+cd frontend && npm install
 ```
 
-#### 2. 連接失敗
+#### 2. 前端顯示錯誤
+**症狀**：界面無法正常顯示
+**解決方案**：
 ```bash
-# 檢查端口
-lsof -i :8080
+# 檢查Node.js版本
+node --version  # 需要18+
 
-# 測試API
-curl http://localhost:8080/health
+# 重新安裝前端依賴
+cd frontend
+rm -rf node_modules package-lock.json
+npm install
 ```
 
-#### 3. 數據不更新
+#### 3. 後端連接失敗
+**症狀**：API調用失敗
+**解決方案**：
 ```bash
-# 檢查WebSocket連接
-wscat -c ws://localhost:8080/ws
+# 檢查配置文件
+cat config/config.toml
 
-# 重啟服務
-pkill trading-bot && cargo run --bin trading-bot-ui
+# 檢查環境變量
+cat .env
+
+# 重啟後端服務
+cargo run
 ```
 
-### 日誌分析
-```bash
-# 查看實時日誌
-tail -f logs/trading_bot.log
+#### 4. 優化功能運行失敗
+**症狀**：參數優化無法完成
+**解決方案**：
+1. 檢查參數範圍設置
+2. 增加超時時間
+3. 減少並行工作數
+4. 檢查系統資源
 
-# 搜索錯誤
-grep -i error logs/trading_bot.log
+#### 5. 風險分析錯誤
+**症狀**：風險指標計算失敗
+**解決方案**：
+1. 檢查數據完整性
+2. 調整置信度參數
+3. 減少模擬次數
+4. 檢查數據格式
 
-# 分析警告
-grep -i warning logs/trading_bot.log
-```
+### 性能問題
+
+#### 1. 圖表渲染慢
+**解決方案**：
+- 減少數據點數量
+- 啟用數據抽樣
+- 使用虛擬化滾動
+- 優化圖表配置
+
+#### 2. 優化運行慢
+**解決方案**：
+- 減少參數搜索範圍
+- 使用更高效的算法
+- 增加並行處理
+- 啟用早期停止
+
+#### 3. 報告生成慢
+**解決方案**：
+- 選擇較簡單的格式
+- 減少圖表數量
+- 使用緩存機制
+- 分批處理數據
 
 ## ❓ 常見問題
 
-### Q: 如何切換到實際交易？
-A: 編輯 `.env` 文件，設置 `DEMO_MODE=false` 和 `BINANCE_TESTNET=false`，並配置真實的API密鑰。
+### Q: 如何選擇最佳優化算法？
+A: 系統會根據參數空間大小自動選擇：
+- 小參數空間（<10個參數）：網格搜索
+- 中等參數空間（10-50個參數）：遺傳算法
+- 大參數空間（>50個參數）：貝葉斯優化
+- 複雜參數空間：隨機搜索
 
-### Q: 可以添加其他交易所嗎？
-A: 當前版本主要支持Binance，後續版本將支持更多交易所。
+### Q: 風險分析需要多長時間？
+A: 分析時間取決於：
+- 數據量大小
+- 模擬次數設置
+- 計算機性能
+- 分析類型複雜度
 
-### Q: 如何備份交易數據？
-A: 交易數據存儲在 `trading_bot.db` 文件中，定期備份此文件即可。
+### Q: 如何自定義報告模板？
+A: 在 `templates/` 目錄下創建自定義模板：
+- HTML模板：`custom_report.html`
+- CSS樣式：`custom_style.css`
+- 配置文件：`template_config.json`
 
-### Q: 支持哪些交易策略？
-A: 當前支持SMA交叉策略、均值回歸策略、動量策略等，可在策略管理中查看。
+### Q: 性能監控會影響系統性能嗎？
+A: 性能監控採用輕量級設計：
+- 低頻率採樣（5秒間隔）
+- 可配置監控級別
+- 可隨時啟用/禁用
+- 對系統性能影響<1%
 
-### Q: 如何優化策略性能？
-A: 使用回測分析功能測試不同參數組合，並根據風險指標調整策略。
-
-### Q: 系統有哪些安全保護？
-A: 包括止損止盈、最大回撤控制、倉位限制、風險警報等多重保護機制。
-
-## 📞 技術支持
-
-### 獲取幫助
-- 📖 查看文檔：[完整文檔](README.md)
-- 🚀 快速開始：[QUICK_START.md](QUICK_START.md)
-- 🔧 故障排除：[TROUBLESHOOTING.md](TROUBLESHOOTING.md)
-- 🧪 測試指南：[TESTING_GUIDE.md](TESTING_GUIDE.md)
-
-### 聯繫我們
-- 📧 Email: support@trading-bot.com
-- 💬 Discord: [Discord社群]
-- 📱 GitHub: [GitHub項目]
+### Q: 如何導出優化結果？
+A: 優化結果支持多種導出格式：
+- JSON格式：完整參數和結果
+- CSV格式：表格化數據
+- Excel格式：包含圖表和統計
+- PDF格式：專業報告格式
 
 ---
 
-**🎯 祝您交易順利！** 📈✨
+**版本**: v1.03.0  
+**最後更新**: 2024年12月  
+**狀態**: ✅ 生產就緒

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>v1.03 第二階段測試 - 策略管理中心霓虹未來整合</title>
+  <style>
+    /* 引入霓虹未來設計系統變數 */
+    :root {
+      --bg-main: #0D0F1A;
+      --bg-panel: #161A25;
+      --bg-card: #1A1F2B;
+      --border-color: #2D3748;
+      --border-hover: #4A5568;
+      --text-primary: #E0E2F0;
+      --text-secondary: #7A81A3;
+      --text-muted: #4A5568;
+      --accent-color: #00F5D4;
+      --accent-secondary: #0BC5EA;
+      --profit-green: #29DDC4;
+      --loss-red: #FF4D6D;
+      --warning-orange: #FFA726;
+      
+      --neon-glow: 0 0 20px rgba(0, 245, 212, 0.3);
+      --neon-shadow: 0 0 10px rgba(0, 245, 212, 0.2);
+      --neon-glow-strong: 0 0 30px rgba(0, 245, 212, 0.5);
+      --neon-glow-profit: 0 0 20px rgba(41, 221, 196, 0.3);
+      --neon-glow-loss: 0 0 20px rgba(255, 77, 109, 0.3);
+      
+      --panel-radius: 8px;
+      --panel-padding: 16px;
+      --panel-margin: 16px;
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --spacing-xxl: 48px;
+      
+      --animation-fast: 0.2s;
+      --animation-normal: 0.3s;
+      --animation-slow: 0.5s;
+      --animation-extra-slow: 0.8s;
+      --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-out: cubic-bezier(0.0, 0, 0.2, 1);
+      --ease-in: cubic-bezier(0.4, 0, 1, 1);
+      
+      --font-size-xs: 12px;
+      --font-size-sm: 13px;
+      --font-size-base: 14px;
+      --font-size-lg: 16px;
+      --font-size-xl: 18px;
+      --font-size-2xl: 20px;
+      --font-size-3xl: 24px;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      --font-weight-bold: 700;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-main);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* 策略管理中心樣式 - 從StrategyManagementCenter.css複製 */
+    .strategy-management-center {
+      min-height: 100vh;
+      background: var(--bg-main);
+      display: flex;
+      animation: fadeInUp var(--animation-slow) var(--ease-out);
+    }
+
+    .strategy-sidebar {
+      width: 300px;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border-color);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .strategy-sidebar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--accent-color), transparent, var(--accent-color));
+      animation: sidebar-pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes sidebar-pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+
+    .strategy-sidebar-header {
+      padding: var(--spacing-lg) var(--spacing-md);
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+    }
+
+    .strategy-sidebar-title {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .strategy-sidebar-icon {
+      font-size: var(--font-size-3xl);
+      color: var(--accent-color);
+      filter: drop-shadow(0 0 8px rgba(0, 245, 212, 0.5));
+    }
+
+    .strategy-sidebar-text {
+      flex: 1;
+    }
+
+    .strategy-sidebar-text h3 {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .strategy-sidebar-text p {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      margin: var(--spacing-xs) 0 0 0;
+    }
+
+    .strategy-nav {
+      flex: 1;
+      padding: var(--spacing-md);
+    }
+
+    .strategy-nav-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-sm);
+      border-radius: var(--panel-radius);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all var(--animation-normal) var(--ease-in-out);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .strategy-nav-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 245, 212, 0.05), transparent);
+      transition: left var(--animation-normal) var(--ease-out);
+    }
+
+    .strategy-nav-item:hover {
+      border-color: var(--border-hover);
+      background: rgba(0, 245, 212, 0.03);
+      transform: translateX(4px);
+    }
+
+    .strategy-nav-item:hover::before {
+      left: 100%;
+    }
+
+    .strategy-nav-item.active {
+      border-color: var(--accent-color);
+      background: linear-gradient(90deg, rgba(0, 245, 212, 0.05), rgba(0, 245, 212, 0.02));
+      box-shadow: var(--neon-shadow);
+    }
+
+    .strategy-nav-item.active .strategy-nav-icon {
+      color: var(--accent-color);
+      filter: drop-shadow(0 0 6px rgba(0, 245, 212, 0.6));
+    }
+
+    .strategy-nav-icon {
+      font-size: var(--font-size-xl);
+      color: var(--text-secondary);
+      transition: all var(--animation-normal) var(--ease-in-out);
+    }
+
+    .strategy-nav-info {
+      flex: 1;
+    }
+
+    .strategy-nav-label {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
+      color: var(--text-primary);
+      margin: 0 0 var(--spacing-xs) 0;
+    }
+
+    .strategy-nav-desc {
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .strategy-nav-badge {
+      background: var(--accent-color);
+      color: var(--bg-main);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: 12px;
+      min-width: 18px;
+      text-align: center;
+      animation: pulse 2s infinite;
+    }
+
+    .strategy-create-btn {
+      width: 100%;
+      background: transparent;
+      border: 2px solid var(--accent-color);
+      color: var(--accent-color);
+      padding: var(--spacing-md) var(--spacing-lg);
+      border-radius: var(--panel-radius);
+      cursor: pointer;
+      transition: all var(--animation-normal) var(--ease-in-out);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      margin: var(--spacing-lg) 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .strategy-create-btn:hover {
+      background: var(--accent-color);
+      color: var(--bg-main);
+      box-shadow: var(--neon-glow);
+      transform: translateY(-2px);
+    }
+
+    .strategy-stats {
+      padding: var(--spacing-md);
+      border-top: 1px solid var(--border-color);
+      background: linear-gradient(135deg, var(--bg-panel), var(--bg-card));
+    }
+
+    .strategy-stats h4 {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+      margin: 0 0 var(--spacing-md) 0;
+    }
+
+    .strategy-stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-sm) 0;
+      border-bottom: 1px solid rgba(45, 55, 72, 0.2);
+      transition: all var(--animation-normal) var(--ease-in-out);
+    }
+
+    .strategy-stat-item:last-child {
+      border-bottom: none;
+    }
+
+    .strategy-stat-item:hover {
+      transform: translateX(2px);
+    }
+
+    .strategy-stat-label {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+
+    .strategy-stat-value {
+      background: var(--bg-main);
+      color: var(--text-primary);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-semibold);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      min-width: 32px;
+      text-align: center;
+    }
+
+    .strategy-stat-value.active {
+      background: var(--profit-green);
+      color: var(--bg-main);
+      border-color: var(--profit-green);
+      box-shadow: 0 0 8px rgba(41, 221, 196, 0.3);
+    }
+
+    .strategy-stat-value.paused {
+      background: var(--warning-orange);
+      color: var(--bg-main);
+      border-color: var(--warning-orange);
+      box-shadow: 0 0 8px rgba(255, 167, 38, 0.3);
+    }
+
+    .strategy-content {
+      flex: 1;
+      background: var(--bg-main);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .strategy-content-header {
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-color);
+      padding: var(--spacing-lg) var(--spacing-xl);
+      position: relative;
+    }
+
+    .strategy-content-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: var(--spacing-xl);
+      width: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-color), transparent);
+      animation: glow-sweep 3s ease-in-out infinite;
+    }
+
+    .strategy-content-title {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .strategy-content-icon {
+      font-size: var(--font-size-2xl);
+      color: var(--accent-color);
+      filter: drop-shadow(0 0 8px rgba(0, 245, 212, 0.5));
+    }
+
+    .strategy-content-title h2 {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .strategy-content-desc {
+      font-size: var(--font-size-base);
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .strategy-content-body {
+      flex: 1;
+      padding: var(--spacing-xl);
+      overflow-y: auto;
+    }
+
+    .demo-content {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--panel-radius);
+      padding: var(--spacing-xl);
+      text-align: center;
+      color: var(--text-secondary);
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .demo-icon {
+      font-size: 64px;
+      color: var(--accent-color);
+      margin-bottom: var(--spacing-lg);
+      filter: drop-shadow(0 0 12px rgba(0, 245, 212, 0.5));
+    }
+
+    .test-status {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--bg-panel);
+      border: 1px solid var(--profit-green);
+      border-radius: var(--panel-radius);
+      padding: var(--spacing-sm) var(--spacing-md);
+      color: var(--profit-green);
+      font-size: 12px;
+      box-shadow: var(--neon-glow-profit);
+      z-index: 1000;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    @keyframes glow-sweep {
+      0%, 100% { opacity: 0.5; transform: scaleX(0.5); }
+      50% { opacity: 1; transform: scaleX(1); }
+    }
+
+    /* 響應式設計 */
+    @media (max-width: 768px) {
+      .strategy-management-center { flex-direction: column; }
+      .strategy-sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-color); }
+      .strategy-nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-sm); }
+      .strategy-nav-item:hover { transform: translateY(-2px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="test-status">
+    ✅ v1.03 第二階段測試 - 策略管理中心霓虹未來整合
+  </div>
+
+  <div class="strategy-management-center">
+    <!-- 左側導航 -->
+    <div class="strategy-sidebar">
+      <!-- 側邊欄標題 -->
+      <div class="strategy-sidebar-header">
+        <div class="strategy-sidebar-title">
+          <div class="strategy-sidebar-icon">🤖</div>
+          <div class="strategy-sidebar-text">
+            <h3>策略管理中心</h3>
+            <p>Strategy Management Center</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 導航菜單 -->
+      <div class="strategy-nav">
+        <div class="strategy-nav-item active" onclick="switchTab(this, 'library')">
+          <div class="strategy-nav-icon">🗂️</div>
+          <div class="strategy-nav-info">
+            <h4 class="strategy-nav-label">策略庫</h4>
+            <p class="strategy-nav-desc">瀏覽和創建策略模板</p>
+          </div>
+        </div>
+
+        <div class="strategy-nav-item" onclick="switchTab(this, 'configurator')">
+          <div class="strategy-nav-icon">⚙️</div>
+          <div class="strategy-nav-info">
+            <h4 class="strategy-nav-label">策略配置</h4>
+            <p class="strategy-nav-desc">配置和管理策略參數</p>
+          </div>
+        </div>
+
+        <div class="strategy-nav-item" onclick="switchTab(this, 'monitor')">
+          <div class="strategy-nav-icon">📊</div>
+          <div class="strategy-nav-info">
+            <h4 class="strategy-nav-label">策略監控</h4>
+            <p class="strategy-nav-desc">實時監控策略執行狀態</p>
+          </div>
+          <div class="strategy-nav-badge">3</div>
+        </div>
+
+        <!-- 創建策略按鈕 -->
+        <button class="strategy-create-btn">
+          <span>➕</span>
+          創建新策略
+        </button>
+      </div>
+
+      <!-- 統計信息 -->
+      <div class="strategy-stats">
+        <h4>策略統計</h4>
+        
+        <div class="strategy-stat-item">
+          <span class="strategy-stat-label">總策略數：</span>
+          <span class="strategy-stat-value">12</span>
+        </div>
+
+        <div class="strategy-stat-item">
+          <span class="strategy-stat-label">運行中：</span>
+          <span class="strategy-stat-value active">3</span>
+        </div>
+
+        <div class="strategy-stat-item">
+          <span class="strategy-stat-label">已暫停：</span>
+          <span class="strategy-stat-value paused">2</span>
+        </div>
+
+        <div class="strategy-stat-item">
+          <span class="strategy-stat-label">未激活：</span>
+          <span class="strategy-stat-value">7</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 主內容區 -->
+    <div class="strategy-content">
+      <!-- 內容標題 -->
+      <div class="strategy-content-header">
+        <div class="strategy-content-title">
+          <div class="strategy-content-icon" id="content-icon">🗂️</div>
+          <h2 id="content-title">策略庫</h2>
+        </div>
+        <p class="strategy-content-desc" id="content-desc">瀏覽和創建策略模板</p>
+      </div>
+
+      <!-- 內容主體 -->
+      <div class="strategy-content-body">
+        <div class="demo-content" id="demo-content">
+          <div class="demo-icon" id="demo-icon">🗂️</div>
+          <h3 style="color: var(--text-primary); margin-bottom: var(--spacing-md);">策略庫演示界面</h3>
+          <p style="margin-bottom: var(--spacing-lg);">這裡將顯示策略庫內容：策略模板、創建向導、策略分類等</p>
+          <div style="background: var(--bg-card); padding: var(--spacing-md); border-radius: var(--panel-radius); border: 1px solid var(--border-color);">
+            <p><strong>✅ 第二階段修復完成：</strong></p>
+            <p>霓虹未來設計系統完全整合 | 響應式佈局修復 | 動畫效果優化</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const contentData = {
+      library: {
+        icon: '🗂️',
+        title: '策略庫',
+        desc: '瀏覽和創建策略模板',
+        content: '策略庫演示界面'
+      },
+      configurator: {
+        icon: '⚙️',
+        title: '策略配置',
+        desc: '配置和管理策略參數', 
+        content: '策略配置演示界面'
+      },
+      monitor: {
+        icon: '📊',
+        title: '策略監控',
+        desc: '實時監控策略執行狀態',
+        content: '策略監控演示界面'
+      }
+    }
+
+    function switchTab(element, tab) {
+      // 移除所有active類
+      document.querySelectorAll('.strategy-nav-item').forEach(item => {
+        item.classList.remove('active')
+      })
+      
+      // 添加active到當前項
+      element.classList.add('active')
+      
+      // 更新內容
+      const data = contentData[tab]
+      document.getElementById('content-icon').textContent = data.icon
+      document.getElementById('content-title').textContent = data.title
+      document.getElementById('content-desc').textContent = data.desc
+      document.getElementById('demo-icon').textContent = data.icon
+      document.getElementById('demo-content').innerHTML = `
+        <div class="demo-icon">${data.icon}</div>
+        <h3 style="color: var(--text-primary); margin-bottom: var(--spacing-md);">${data.content}</h3>
+        <p style="margin-bottom: var(--spacing-lg);">這裡將顯示${data.title}的具體功能和界面</p>
+        <div style="background: var(--bg-card); padding: var(--spacing-md); border-radius: var(--panel-radius); border: 1px solid var(--border-color);">
+          <p><strong>✅ 第二階段修復完成：</strong></p>
+          <p>霓虹未來設計系統完全整合 | 響應式佈局修復 | 動畫效果優化</p>
+        </div>
+      `
+      
+      // 添加點擊反饋
+      element.style.transform = 'translateX(2px) scale(0.98)'
+      setTimeout(() => {
+        element.style.transform = ''
+      }, 150)
+    }
+
+    // 演示載入動畫
+    setTimeout(() => {
+      document.querySelectorAll('.strategy-nav-item').forEach((item, index) => {
+        setTimeout(() => {
+          item.style.opacity = '0'
+          item.style.transform = 'translateX(-20px)'
+          setTimeout(() => {
+            item.style.transition = 'all 0.5s ease-out'
+            item.style.opacity = '1'
+            item.style.transform = 'translateX(0)'
+          }, 50)
+        }, index * 100)
+      })
+    }, 500)
+  </script>
+</body>
+</html> 

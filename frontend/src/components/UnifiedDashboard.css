@@ -1,0 +1,587 @@
+/* 統一儀表板 - 霓虹未來設計系統樣式 */
+
+/* CSS變數定義 */
+:root {
+  /* 霓虹未來色彩系統 */
+  --neon-primary: #00F5D4;
+  --neon-secondary: #29DDC4;
+  --neon-accent: #7A81A3;
+  --neon-success: #10B981;
+  --neon-warning: #F59E0B;
+  --neon-danger: #EF4444;
+  --neon-info: #3B82F6;
+  
+  /* 背景色彩 */
+  --neon-bg-primary: #0A0F1C;
+  --neon-bg-secondary: #151928;
+  --neon-bg-tertiary: #1E293B;
+  --neon-bg-card: rgba(30, 41, 59, 0.8);
+  --neon-bg-glass: rgba(255, 255, 255, 0.05);
+  
+  /* 邊框和陰影 */
+  --neon-border: rgba(0, 245, 212, 0.3);
+  --neon-border-hover: rgba(0, 245, 212, 0.6);
+  --neon-glow: 0 0 20px rgba(0, 245, 212, 0.3);
+  --neon-glow-strong: 0 0 40px rgba(0, 245, 212, 0.6);
+  
+  /* 動畫時長 */
+  --neon-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --neon-animation-fast: 0.15s;
+  --neon-animation-normal: 0.3s;
+  --neon-animation-slow: 0.5s;
+}
+
+/* 統一儀表板容器 */
+.unified-dashboard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--neon-bg-primary) 0%, var(--neon-bg-secondary) 100%);
+  color: #ffffff;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.unified-dashboard::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(0, 245, 212, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(41, 221, 196, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(122, 129, 163, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 儀表板頭部 */
+.dashboard-header {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--neon-border);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon-primary), transparent);
+  animation: glow-sweep 3s ease-in-out infinite;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header-left .dashboard-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(45deg, var(--neon-primary), var(--neon-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title-icon {
+  background: linear-gradient(45deg, var(--neon-primary), var(--neon-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.dashboard-subtitle {
+  font-size: 14px;
+  color: var(--neon-accent);
+  margin: 8px 0 0;
+  opacity: 0.8;
+}
+
+/* 系統警告 */
+.system-alert {
+  margin: 0 24px 24px;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* 儀表板統計卡片 */
+.dashboard-stats {
+  margin: 0 0 24px;
+  padding: 0 24px;
+}
+
+.neon-stat-card {
+  background: var(--neon-bg-card);
+  border: 1px solid var(--neon-border);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  transition: var(--neon-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.neon-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.8s ease;
+}
+
+.neon-stat-card:hover::before {
+  left: 100%;
+}
+
+.neon-stat-card:hover {
+  border-color: var(--neon-border-hover);
+  box-shadow: var(--neon-glow);
+  transform: translateY(-2px);
+}
+
+/* 霓虹卡片通用樣式 */
+.neon-card {
+  background: var(--neon-bg-card);
+  border: 1px solid var(--neon-border);
+  border-radius: 16px;
+  backdrop-filter: blur(15px);
+  transition: var(--neon-transition);
+}
+
+.neon-card .ant-card-head {
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--neon-border);
+}
+
+.neon-card .ant-card-head-title {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* 快速操作面板 */
+.quick-actions-card {
+  margin: 0 24px 24px;
+}
+
+.quick-actions-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--neon-primary);
+}
+
+.actions-grid .action-button {
+  width: 100%;
+  height: 80px !important;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+  transition: var(--neon-transition);
+}
+
+.action-button .action-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.action-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* 動態按鈕效果 */
+.action-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.action-button:hover::after {
+  left: 100%;
+}
+
+/* 主要內容區域 */
+.main-content {
+  padding: 0 24px;
+}
+
+/* 導航模組 */
+.navigation-card {
+  height: fit-content;
+}
+
+.navigation-modules {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.module-card {
+  border: 1px solid var(--neon-border);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  transition: var(--neon-transition);
+  cursor: pointer;
+}
+
+.module-card:hover {
+  border-color: var(--neon-border-hover);
+  background: rgba(0, 245, 212, 0.05);
+  transform: translateX(4px);
+}
+
+.module-card.active {
+  border-color: var(--neon-primary);
+  background: rgba(0, 245, 212, 0.1);
+  box-shadow: var(--neon-glow);
+}
+
+.module-content {
+  padding: 16px;
+}
+
+.module-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.module-icon {
+  font-size: 20px;
+}
+
+.module-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.module-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.module-description {
+  margin: 0;
+  font-size: 12px;
+  color: var(--neon-accent);
+  line-height: 1.4;
+}
+
+/* 系統總覽面板 */
+.system-overview .overview-card {
+  height: fit-content;
+}
+
+.overview-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--neon-primary);
+}
+
+.status-indicators {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+}
+
+.health-summary {
+  margin-bottom: 24px;
+}
+
+.health-card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--neon-border);
+  border-radius: 12px;
+  height: 80px;
+}
+
+.health-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 100%;
+}
+
+.health-info h4 {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: var(--neon-accent);
+}
+
+.health-tag {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* 選項卡樣式 */
+.overview-tabs .ant-tabs-tab {
+  color: var(--neon-accent);
+  transition: var(--neon-transition);
+}
+
+.overview-tabs .ant-tabs-tab:hover {
+  color: var(--neon-primary);
+}
+
+.overview-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--neon-primary);
+}
+
+.overview-tabs .ant-tabs-ink-bar {
+  background: var(--neon-primary);
+}
+
+/* 系統狀態頁簽 */
+.system-status-tab .metric-card {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  height: 100px;
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.metric-name {
+  font-size: 12px;
+  color: var(--neon-accent);
+}
+
+.metric-value {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.metric-value .value {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.metric-value .unit {
+  font-size: 12px;
+  color: var(--neon-accent);
+}
+
+/* 性能頁簽 */
+.performance-tab .ant-card {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* 活動頁簽 */
+.activity-tab .ant-timeline {
+  margin-top: 16px;
+}
+
+.activity-item .activity-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.activity-time {
+  font-size: 12px;
+  color: var(--neon-accent);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.activity-title {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.activity-description {
+  font-size: 13px;
+  color: var(--neon-accent);
+  margin: 0;
+}
+
+/* 快速操作快捷鍵提示 */
+.shortcuts-hint {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--neon-border);
+  font-size: 11px;
+  color: var(--neon-accent);
+}
+
+.shortcut-item kbd {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--neon-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 10px;
+  color: var(--neon-primary);
+}
+
+/* 霓虹邊框效果 */
+.neon-border {
+  border: 1px solid var(--neon-border);
+  position: relative;
+}
+
+.neon-border::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  border-radius: inherit;
+  background: linear-gradient(45deg, var(--neon-primary), var(--neon-secondary), transparent, transparent);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity var(--neon-animation-normal);
+}
+
+.neon-border:hover::before {
+  opacity: 0.3;
+}
+
+/* 霓虹按鈕效果 */
+.neon-button {
+  border: 1px solid var(--neon-border);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--neon-primary);
+  transition: var(--neon-transition);
+}
+
+.neon-button:hover {
+  border-color: var(--neon-border-hover);
+  background: rgba(0, 245, 212, 0.1);
+  color: var(--neon-primary);
+  box-shadow: var(--neon-glow);
+}
+
+/* 動畫效果 */
+@keyframes glow-sweep {
+  0%, 100% { 
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px rgba(0, 245, 212, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 15px rgba(0, 245, 212, 0.8));
+  }
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .unified-dashboard {
+    padding: 0;
+  }
+  
+  .dashboard-header {
+    padding: 16px;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  
+  .dashboard-title {
+    font-size: 24px !important;
+  }
+  
+  .dashboard-stats,
+  .main-content {
+    padding: 0 16px;
+  }
+  
+  .quick-actions-card {
+    margin: 0 16px 16px;
+  }
+  
+  .action-button {
+    height: 60px !important;
+  }
+  
+  .status-indicators {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 576px) {
+  .actions-grid .ant-col {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  
+  .health-summary .ant-col {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  
+  .main-content .ant-col {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* 深色模式優化 */
+@media (prefers-color-scheme: dark) {
+  .unified-dashboard {
+    color-scheme: dark;
+  }
+}
+
+/* 減少動畫偏好支持 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

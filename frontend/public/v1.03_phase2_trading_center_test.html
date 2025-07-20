@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>v1.03 第二階段測試 - 交易管理中心霓虹未來整合</title>
+  <style>
+    /* 引入霓虹未來設計系統變數 */
+    :root {
+      --bg-main: #0D0F1A;
+      --bg-panel: #161A25;
+      --border-color: #2D3748;
+      --text-primary: #E0E2F0;
+      --text-secondary: #7A81A3;
+      --accent-color: #00F5D4;
+      --profit-green: #29DDC4;
+      --loss-red: #FF4D6D;
+      
+      --neon-glow: 0 0 20px rgba(0, 245, 212, 0.3);
+      --neon-shadow: 0 0 10px rgba(0, 245, 212, 0.2);
+      --neon-glow-strong: 0 0 30px rgba(0, 245, 212, 0.5);
+      
+      --animation-fast: 0.2s;
+      --animation-normal: 0.3s;
+      --animation-slow: 0.5s;
+      
+      --panel-radius: 8px;
+      --panel-padding: 20px;
+      --panel-margin: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-main);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* 交易管理中心樣式 */
+    .trading-management-center {
+      min-height: 100vh;
+      background: var(--bg-main);
+      display: flex;
+      animation: fadeInUp var(--animation-slow) ease-out;
+    }
+
+    .trading-sidebar {
+      width: 320px;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border-color);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .trading-sidebar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--accent-color), transparent, var(--accent-color));
+      animation: sidebar-pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes sidebar-pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+
+    .trading-sidebar-header {
+      padding: 24px 16px;
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+    }
+
+    .trading-sidebar-title {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .trading-sidebar-icon {
+      font-size: 24px;
+      color: var(--accent-color);
+      filter: drop-shadow(0 0 8px rgba(0, 245, 212, 0.5));
+    }
+
+    .trading-sidebar-text {
+      flex: 1;
+    }
+
+    .trading-sidebar-text h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .trading-sidebar-text p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 4px 0 0 0;
+    }
+
+    .trading-nav {
+      flex: 1;
+      padding: 16px;
+    }
+
+    .trading-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      margin-bottom: 8px;
+      border-radius: var(--panel-radius);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all var(--animation-normal) ease-in-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .trading-nav-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 245, 212, 0.05), transparent);
+      transition: left var(--animation-normal) ease-out;
+    }
+
+    .trading-nav-item:hover {
+      border-color: var(--border-color);
+      background: rgba(0, 245, 212, 0.03);
+      transform: translateX(4px);
+    }
+
+    .trading-nav-item:hover::before {
+      left: 100%;
+    }
+
+    .trading-nav-item.active {
+      border-color: var(--accent-color);
+      background: linear-gradient(90deg, rgba(0, 245, 212, 0.05), rgba(0, 245, 212, 0.02));
+      box-shadow: var(--neon-shadow);
+    }
+
+    .trading-nav-item.active .trading-nav-icon {
+      color: var(--accent-color);
+      filter: drop-shadow(0 0 6px rgba(0, 245, 212, 0.6));
+    }
+
+    .trading-nav-icon {
+      font-size: 18px;
+      color: var(--text-secondary);
+      transition: all var(--animation-normal) ease-in-out;
+    }
+
+    .trading-nav-info {
+      flex: 1;
+    }
+
+    .trading-nav-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin: 0 0 4px 0;
+    }
+
+    .trading-nav-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .emergency-stop-btn {
+      width: 100%;
+      background: transparent;
+      border: 2px solid var(--loss-red);
+      color: var(--loss-red);
+      padding: 12px 16px;
+      border-radius: var(--panel-radius);
+      cursor: pointer;
+      transition: all var(--animation-normal) ease-in-out;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 16px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .emergency-stop-btn:hover {
+      background: var(--loss-red);
+      color: var(--bg-main);
+      box-shadow: 0 0 20px rgba(255, 77, 109, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .trading-stats {
+      padding: 16px;
+      border-top: 1px solid var(--border-color);
+      background: linear-gradient(135deg, var(--bg-panel), var(--bg-main));
+    }
+
+    .trading-stats h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 16px 0;
+    }
+
+    .trading-stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(45, 55, 72, 0.2);
+      transition: all var(--animation-normal) ease-in-out;
+    }
+
+    .trading-stat-item:last-child {
+      border-bottom: none;
+    }
+
+    .trading-stat-item:hover {
+      transform: translateX(2px);
+    }
+
+    .trading-stat-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .trading-stat-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .trading-stat-value.positive {
+      color: var(--profit-green);
+    }
+
+    .trading-stat-value.negative {
+      color: var(--loss-red);
+    }
+
+    .trading-content {
+      flex: 1;
+      background: var(--bg-main);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .trading-content-header {
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-color);
+      padding: 24px 32px;
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .trading-content-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 32px;
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-color), transparent);
+      animation: glow-sweep 3s ease-in-out infinite;
+    }
+
+    .trading-content-title {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .trading-content-icon {
+      font-size: 20px;
+      color: var(--accent-color);
+      filter: drop-shadow(0 0 8px rgba(0, 245, 212, 0.5));
+    }
+
+    .trading-content-title h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .trading-content-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin: 4px 0 0 0;
+    }
+
+    .trading-content-body {
+      flex: 1;
+      padding: 32px;
+      overflow-y: auto;
+    }
+
+    .trading-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .trading-stat-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--panel-radius);
+      padding: var(--panel-padding);
+      transition: all var(--animation-normal) ease-in-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .trading-stat-card:hover {
+      border-color: var(--accent-color);
+      transform: translateY(-2px);
+      box-shadow: var(--neon-shadow);
+    }
+
+    .trading-stat-card .stat-icon {
+      font-size: 24px;
+      color: var(--accent-color);
+      margin-bottom: 8px;
+    }
+
+    .trading-stat-card .stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 4px 0;
+    }
+
+    .trading-stat-card .stat-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .demo-content {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--panel-radius);
+      padding: 32px;
+      text-align: center;
+      color: var(--text-secondary);
+      height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .demo-icon {
+      font-size: 64px;
+      color: var(--accent-color);
+      margin-bottom: 16px;
+      filter: drop-shadow(0 0 12px rgba(0, 245, 212, 0.5));
+    }
+
+    .test-status {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--bg-panel);
+      border: 1px solid var(--profit-green);
+      border-radius: var(--panel-radius);
+      padding: 8px 16px;
+      color: var(--profit-green);
+      font-size: 12px;
+      box-shadow: 0 0 20px rgba(41, 221, 196, 0.3);
+      z-index: 1000;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes glow-sweep {
+      0%, 100% { opacity: 0.5; transform: scaleX(0.5); }
+      50% { opacity: 1; transform: scaleX(1); }
+    }
+
+    /* 響應式設計 */
+    @media (max-width: 768px) {
+      .trading-management-center { flex-direction: column; }
+      .trading-sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-color); }
+      .trading-nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="test-status">
+    ✅ v1.03 第二階段測試 - 交易管理中心霓虹未來整合
+  </div>
+
+  <div class="trading-management-center">
+    <!-- 左側導航 -->
+    <div class="trading-sidebar">
+      <!-- 側邊欄標題 -->
+      <div class="trading-sidebar-header">
+        <div class="trading-sidebar-title">
+          <div class="trading-sidebar-icon">⚡</div>
+          <div class="trading-sidebar-text">
+            <h3>交易管理中心</h3>
+            <p>Trading Management Center</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 導航菜單 -->
+      <div class="trading-nav">
+        <div class="trading-nav-item active" onclick="switchTab(this, 'monitor')">
+          <div class="trading-nav-icon">📊</div>
+          <div class="trading-nav-info">
+            <h4 class="trading-nav-label">實時監控</h4>
+            <p class="trading-nav-desc">實時交易數據和持倉狀態</p>
+          </div>
+        </div>
+
+        <div class="trading-nav-item" onclick="switchTab(this, 'risk')">
+          <div class="trading-nav-icon">🛡️</div>
+          <div class="trading-nav-info">
+            <h4 class="trading-nav-label">風險控制</h4>
+            <p class="trading-nav-desc">風險管理和保護設置</p>
+          </div>
+        </div>
+
+        <div class="trading-nav-item" onclick="switchTab(this, 'orders')">
+          <div class="trading-nav-icon">📋</div>
+          <div class="trading-nav-info">
+            <h4 class="trading-nav-label">訂單管理</h4>
+            <p class="trading-nav-desc">訂單執行和歷史記錄</p>
+          </div>
+        </div>
+
+        <div class="trading-nav-item" onclick="switchTab(this, 'positions')">
+          <div class="trading-nav-icon">💼</div>
+          <div class="trading-nav-info">
+            <h4 class="trading-nav-label">持倉管理</h4>
+            <p class="trading-nav-desc">持倉狀態和管理操作</p>
+          </div>
+        </div>
+
+        <!-- 緊急停止按鈕 -->
+        <button class="emergency-stop-btn">
+          <span>🚨</span>
+          緊急停止交易
+        </button>
+      </div>
+
+      <!-- 統計信息 */
+      <div class="trading-stats">
+        <h4>交易總覽</h4>
+        
+        <div class="trading-stat-item">
+          <span class="trading-stat-label">總收益:</span>
+          <span class="trading-stat-value positive">$1,250.75</span>
+        </div>
+
+        <div class="trading-stat-item">
+          <span class="trading-stat-label">持倉數:</span>
+          <span class="trading-stat-value">3</span>
+        </div>
+
+        <div class="trading-stat-item">
+          <span class="trading-stat-label">活躍訂單:</span>
+          <span class="trading-stat-value">2</span>
+        </div>
+
+        <div class="trading-stat-item">
+          <span class="trading-stat-label">風險等級:</span>
+          <span class="trading-stat-value">中等</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 主內容區 -->
+    <div class="trading-content">
+      <!-- 內容標題 -->
+      <div class="trading-content-header">
+        <div class="trading-content-title">
+          <div class="trading-content-icon" id="content-icon">📊</div>
+          <div>
+            <h2 id="content-title">實時監控</h2>
+            <p class="trading-content-desc" id="content-desc">實時交易數據和持倉狀態</p>
+          </div>
+        </div>
+        <div style="color: var(--text-secondary); font-size: 12px;">
+          自動刷新：開啟
+        </div>
+      </div>
+
+      <!-- 內容主體 -->
+      <div class="trading-content-body">
+        <!-- 統計卡片 -->
+        <div class="trading-stats-grid">
+          <div class="trading-stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value positive">$1,250.75</div>
+            <div class="stat-label">總收益</div>
+          </div>
+          <div class="trading-stat-card">
+            <div class="stat-icon">💼</div>
+            <div class="stat-value">$12,500</div>
+            <div class="stat-label">總保證金</div>
+          </div>
+          <div class="trading-stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value">3</div>
+            <div class="stat-label">持倉數量</div>
+          </div>
+          <div class="trading-stat-card">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-value">2</div>
+            <div class="stat-label">活躍訂單</div>
+          </div>
+        </div>
+
+        <div class="demo-content" id="demo-content">
+          <div class="demo-icon" id="demo-icon">📊</div>
+          <h3 style="color: var(--text-primary); margin-bottom: 16px;">實時監控演示界面</h3>
+          <p style="margin-bottom: 24px;">這裡將顯示實時交易數據、價格圖表、持倉狀態等信息</p>
+          <div style="background: var(--bg-main); padding: 16px; border-radius: var(--panel-radius); border: 1px solid var(--border-color);">
+            <p><strong>✅ 第二階段修復完成：</strong></p>
+            <p>霓虹未來設計系統整合 | 響應式佈局優化 | 交易數據可視化</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const contentData = {
+      monitor: {
+        icon: '📊',
+        title: '實時監控',
+        desc: '實時交易數據和持倉狀態',
+        content: '實時監控演示界面'
+      },
+      risk: {
+        icon: '🛡️',
+        title: '風險控制',
+        desc: '風險管理和保護設置',
+        content: '風險控制演示界面'
+      },
+      orders: {
+        icon: '📋',
+        title: '訂單管理',
+        desc: '訂單執行和歷史記錄',
+        content: '訂單管理演示界面'
+      },
+      positions: {
+        icon: '💼',
+        title: '持倉管理',
+        desc: '持倉狀態和管理操作',
+        content: '持倉管理演示界面'
+      }
+    }
+
+    function switchTab(element, tab) {
+      // 移除所有active類
+      document.querySelectorAll('.trading-nav-item').forEach(item => {
+        item.classList.remove('active')
+      })
+      
+      // 添加active到當前項
+      element.classList.add('active')
+      
+      // 更新內容
+      const data = contentData[tab]
+      document.getElementById('content-icon').textContent = data.icon
+      document.getElementById('content-title').textContent = data.title
+      document.getElementById('content-desc').textContent = data.desc
+      document.getElementById('demo-icon').textContent = data.icon
+      document.getElementById('demo-content').innerHTML = `
+        <div class="demo-icon">${data.icon}</div>
+        <h3 style="color: var(--text-primary); margin-bottom: 16px;">${data.content}</h3>
+        <p style="margin-bottom: 24px;">這裡將顯示${data.title}的具體功能和界面</p>
+        <div style="background: var(--bg-main); padding: 16px; border-radius: var(--panel-radius); border: 1px solid var(--border-color);">
+          <p><strong>✅ 第二階段修復完成：</strong></p>
+          <p>霓虹未來設計系統整合 | 響應式佈局優化 | 交易數據可視化</p>
+        </div>
+      `
+      
+      // 添加點擊反饋
+      element.style.transform = 'translateX(2px) scale(0.98)'
+      setTimeout(() => {
+        element.style.transform = ''
+      }, 150)
+    }
+
+    // 演示載入動畫
+    setTimeout(() => {
+      document.querySelectorAll('.trading-nav-item').forEach((item, index) => {
+        setTimeout(() => {
+          item.style.opacity = '0'
+          item.style.transform = 'translateX(-20px)'
+          setTimeout(() => {
+            item.style.transition = 'all 0.5s ease-out'
+            item.style.opacity = '1'
+            item.style.transform = 'translateX(0)'
+          }, 50)
+        }, index * 100)
+      })
+    }, 500)
+  </script>
+</body>
+</html> 
